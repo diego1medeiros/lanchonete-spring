@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<link rel="stylesheet" href="css/estilo.css" />
+	<h:outputStylesheet library="css" name="estilo.css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Lanchonete</title>
+</h:head>
+<h:body>
+	<ui:composition template="/_templatefundo.xhtml">
+		<ui:define name="conteudo">
+			<p:sidebar widgetVar="sidebar1" style="opacity:0.9; width: 500px;">
+				<center>
+					<p:graphicImage library="imagens" name="logo1.png" width="380" />
+					<h1 style="font-weight: bold;">Login</h1>
+
+					<h:form id="login">
+						<p:growl showDetail="true" />
+						<p:toolbar style="opacity:0.9">
+							<p:toolbarGroup>
+								<p:panelGrid columns="1">
+
+									<p:outputLabel value="Login" for="login"
+										style=" font-weight: bold;" />
+									<p:inputText value="#{login}" id="login"
+										placeholder="digite o login" size="40"
+										requiredMessage="O login é obrigatoria" />
+
+									<p:outputLabel value="Senha" for="senha"
+										style=" font-weight: bold;" />
+									<p:password value="#{senha}" id="senha"
+										placeholder="digite o senha" size="40"
+										requiredMessage="A senha e obrigatoria" />
+								</p:panelGrid>
+							</p:toolbarGroup>
+						</p:toolbar>
+						<br />
+						<p:commandButton
+							action="#{funcionariobean.isLoginSenhaValida(login,senha)}"
+							value="Efetue Login" update="@form" process="@form"
+							style=" font-weight: bold;"
+							styleClass="rounded-button ui-button-danger" icon="pi pi-sign-in" />
+						<br /> <br /> <br />
+					</h:form>
+				</center>
+			</p:sidebar>
+			<center>
+				<br /> <br /> <br /> <br /> <br />
+				<p:commandButton value="Efetue Login"
+					styleClass="rounded-button ui-button-danger" type="button"
+					onclick="PF('sidebar1').show()" icon="pi pi-sign-in"
+					style="width:200px;height:70px;opacity:0.9 ;  font-weight: bold;" />
+			</center>
+			<center>
+				<br /> <br /> <br /> <br /> <br />
+			</center>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

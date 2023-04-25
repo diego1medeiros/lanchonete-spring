@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+	<link rel="stylesheet" href="css/estilo.css" />
+	<h:outputStylesheet library="css" name="estilo.css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Lanchonete</title>
+</h:head>
+
+<h:body>
+	<ui:composition template="/_template.xhtml">
+		<ui:define name="conteudo">
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<p:growl showDetail="true" id="mesagens" />
+			<h:form id="formu">
+
+
+				<p:panel header="Movimentaçao do Caixa"
+					style="text-align:center;font-weight: bold; font-size: 39px;background-color:#363636;opacity:0.9;">
+
+					<p:commandButton id="novo" value="Pesquisa" icon="pi pi-search"
+						process="@this" oncomplete="PF('pesquisa').show()"
+						styleClass="ui-button-danger"
+						style="font-weight: bold;font-size:25px;margin-right: .5rem">
+						<p:tooltip for="novo" value="Pesquisar movimentações" showEffect="clip"
+							hideEffect="fold" />
+					</p:commandButton>
+					<br />
+					<br />
+					<p:schedule value="#{caixaBean.caixas}" id="evento"
+						style="color: red;font-weight: bold; font-size: 20px;background-color:#363636;opacity:0.9;">
+
+						<p:ajax event="dateSelect" oncomplete="PF('dialogo').show();"
+							listener="#{caixaBean.novo}" update=":mesagens :form:painel" />
+
+						<p:ajax event="eventSelect" oncomplete="PF('dialogo').show();"
+							listener="#{caixaBean.selecionado}"
+							update=":mesagens :form:painel" />
+					</p:schedule>
+
+				</p:panel>
+
+			</h:form>
+			<p:dialog header="Fechamento do Caixa" resizable="false"
+				draggable="false"
+				style="text-align:center;font-weight: bold; font-size:29px;"
+				closable="true" widgetVar="dialogo">
+				<h:form id="form">
+					<p:panelGrid columns="2" id="painel">
+						<p:outputLabel value="Data da Abertura" />
+						<p:inputText value="#{caixaBean.movimentacaoCaixa.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR"
+								timeZone="America/Sao_Paulo" />
+						</p:inputText>
+
+						<p:outputLabel value="Funcionario" />
+						<p:selectOneMenu converter="#{funcionarioConverter}" filter="true"
+							value="#{caixaBean.movimentacaoCaixa.funcionario.idFuncionario}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Selecione o Funcionario" />
+							<f:selectItems value="#{caixaBean.listaNomeFuncioanrio}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Valor do Caixa" />
+						<p:inputNumber value="#{caixaBean.movimentacaoCaixa.valorCaixa}"
+							roundMethod="S" decimalPlaces="2" symbol="R$" />
+
+						<p:outputLabel value="Valor Total do Sistema" />
+						<p:inputNumber value="#{caixaBean.movimentacaoCaixa.valorTotal}"
+							roundMethod="S" decimalPlaces="2" symbol="R$" />
+
+						<p:outputLabel value="Observação" for="descricao" />
+						<p:inputTextarea value="#{caixaBean.movimentacaoCaixa.observacao}"
+							id="descricao" placeholder="Inserir a observação" />
+					</p:panelGrid>
+					<p:commandButton value="Salvar"
+						actionListener="#{caixaBean.salvarMovimentacaoDoCaixa}"
+						update=":mesagens :form:painel :formu:evento :formulario:excluir" />
+				</h:form>
+			</p:dialog>
+
+			<p:dialog widgetVar="pesquisa"
+				style="text-align:center;font-weight: bold; font-size: 39px;background-color:#363636;">
+				<h:form id="formulario">
+					<p:dataTable value="#{caixaBean.movimentacaoCaixas}" var="caixa"
+						id="excluir"  
+						style="font-weight: bold; font-size: 15px; 
+				fonte-family:Helvetica Neue, HElvetica, Arial, sans-serif;"
+						paginator="true" rows="5">
+						
+						<p:column headerText="Data Do Fechamento" 
+							style=" text-align: center;">
+							<h:outputText value="#{caixa.data}" />
+						</p:column>
+						<p:column headerText="Valor do Caixa" style=" text-align: center;">
+							<h:outputText value="#{caixa.valorCaixa}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Valor Total do Sistema"
+							style=" text-align: center;">
+							<h:outputText value="#{caixa.valorTotal}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Funcionario" style=" text-align: center;">
+							<h:outputText value="#{caixa.funcionario.nome}" />
+						</p:column>
+
+						<p:column headerText="Observações" style=" text-align: center;">
+							<h:outputText value="#{caixa.observacao}" />
+						</p:column>
+						<p:column headerText="" style=" text-align:center;" width="90">
+							<p:commandButton
+								actionListener="#{caixaBean.removerRegistroDaMOvimentacaoDoCaixa(caixa)}"
+								id="excluir" styleClass="ui-button-danger" icon="pi pi-trash"
+								process="@this" update=":mesagens :form:painel :formu:evento :formulario:excluir">
+								<p:tooltip for="excluir" value="Excluir Movimentações"
+									showEffect="clip" hideEffect="fold" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

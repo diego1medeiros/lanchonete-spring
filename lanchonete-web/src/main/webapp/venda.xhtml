@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Lanchonete</title>
+</h:head>
+
+<h:body>
+	<ui:composition template="/_template.xhtml">
+		<ui:define name="conteudo">
+			<p:growl showDetail="true" id="mesagens" />
+			<h:form id="form">
+
+				<p:dialog widgetVar="pesquisa" id="excluir"
+					style="text-align:center;font-weight: bold; font-size: 39px;background-color:#363636;opacity:0.9;">
+					<p:dataTable value="#{vendaBean.listaDaVenda}" var="venda"
+						id="excluirTabela"
+						style="font-weight: bold; font-size: 15px; 
+				fonte-family:Helvetica Neue, HElvetica, Arial, sans-serif;"
+						paginator="true" rows="5">
+						<p:column headerText="Pedido" style=" text-align: center;">
+							<h:outputText value="#{venda.idVenda}" />
+						</p:column>
+						<p:column headerText="Cliente" style=" text-align: center;">
+							<h:outputText value="#{venda.cliente.nome}" />
+						</p:column>
+						<p:column headerText="Enderenço" style=" text-align: center;">
+							<h:outputText
+								value="#{venda.cliente.endereco.rua} 
+									- #{venda.cliente.endereco.numero}  
+									- #{venda.cliente.endereco.bairro} 
+									- #{venda.cliente.endereco.cidade}" />
+						</p:column>
+						<p:column headerText="Telefone" style=" text-align: center;">
+							<h:outputText value="#{venda.cliente.telefone}" />
+						</p:column>
+						<p:column headerText="Quantidade" style=" text-align: center;">
+							<h:outputText value="#{venda.qtdeTotal}" />
+						</p:column>
+						<p:column headerText="Valor Total" style=" text-align: center;">
+							<h:outputText value="#{venda.valorTotal}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Observação" style=" text-align: center;">
+							<h:outputText value="#{venda.observacao}" />
+						</p:column>
+						<p:column headerText="" style=" text-align:center;" width="90">
+							<p:commandButton ajax="false" onclick="this.form.target='_blank'"
+								action="#{vendaBean.getImprimirPedidos(venda)}" id="imprimir"
+								icon="pi pi-print"
+								update=":mesagens :form:excluirTabela :form:excluir"
+								process="@this">
+								<p:tooltip for="imprimir" value="Imprimir Pedido"
+									showEffect="clip" hideEffect="fold" />
+							</p:commandButton>
+							<br />
+							<br />
+							<p:commandButton
+								actionListener="#{vendaBean.excluirPedidoDoCliente(venda)}"
+								id="excluir"
+								update=":mesagens :form:excluirTabela :form:excluir"
+								styleClass="ui-button-danger" icon="pi pi-trash" process="@this">
+								<p:confirm header="Confirmação"
+									message="Deseja excluir este Pedido?" icon="pi pi-info-circle" />
+								<p:tooltip value="Excluir pedido" for="excluir"
+									showEffect="clip" hideEffect="fold" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:dialog>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+					responsive="true" width="350">
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no ui-button-flat" />
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes ui-button-danger" />
+				</p:confirmDialog>
+				<p:panel style=" text-align:center;opacity:0.9;">
+					<p:commandButton id="novo" value="Lista de Pedidos"
+						icon="pi pi-search" process="@this"
+						update=":mesagens :form:tabelaitens :form:valortotal :form:lista form:excluirTabela"
+						oncomplete="PF('pesquisa').show()"
+						style="font-weight: bold;font-size:25px;margin-right: .5rem">
+						<p:tooltip for="novo" value="Lista de Pedidos" showEffect="clip"
+							hideEffect="fold" />
+					</p:commandButton>
+				</p:panel>
+
+				<p:dataView var="produto" value="#{vendaBean.listaProdutos}"
+					style="opacity:0.9;" rows="12" id="tabela" layout="grid"
+					gridIcon="pi pi-shopping-cart" icon="pi pi-shopping-cart">
+					<p:dataViewGridItem>
+						<p:panel header="#{produto.nome}" style=" text-align:center;"
+							rendered="#{produto.estoque.qtde >= 1}">
+							<i class="pi pi-tag product-category-icon" />
+							<h:outputText value="#{produto.categoria}"
+								style="font-weight: bold;" />
+							<br />
+							<br />
+							<h:outputText value="#{produto.tipoProduto.descricao}"
+								style="font-weight: bold;" />
+							<br />
+							<br />
+							<p:graphicImage value="#{produtobean.carregarImagens(produto)}"
+								width="70" stream="false" />
+							<br />
+							<br />
+							<h:outputText value="#{produto.preco}" style="font-weight: bold;">
+								<f:convertNumber currencySymbol="R$" type="currency" />
+							</h:outputText>
+							<br />
+							<br />
+							<p:commandButton value="Adicionar ao carrinho"
+								icon="pi pi-shopping-cart"
+								actionListener="#{vendaBean.adicionarItens}" process="@this"
+								disabled="#{produto.estoque.qtde eq 0}"
+								update=":mesagens :form:tabelaitens :form:valortotal :form:lista :form:excluirTabela">
+								<f:attribute name="produtoSelecionado" value="#{produto}" />
+							</p:commandButton>
+
+						</p:panel>
+					</p:dataViewGridItem>
+				</p:dataView>
+
+				<br />
+				<br />
+
+				<p:toolbar style="opacity:0.9;">
+					<p:toolbarGroup>
+						<p:dataTable value="#{vendaBean.itensVenda}" var="itens"
+							id="tabelaitens"
+							style="font-weight: bold; font-size: 15px;opacity:0.9;
+				fonte-family:Helvetica Neue, HElvetica, Arial, sans-serif;"
+							paginator="true" rows="7" stickyHeader="true">
+							<p:column headerText="#{bundle['produto.nome']}"
+								style=" text-align: center;">
+								<h:outputText value="#{itens.produto.nome}" />
+							</p:column>
+							<p:column headerText="Imagem" style=" text-align: center;">
+								<p:graphicImage value="#{vendaBean.carregarImagens(itens)}"
+									width="40" stream="false" />
+							</p:column>
+
+							<p:column headerText="#{bundle['produto.preco']}"
+								style=" text-align: center;">
+								<h:outputText value="#{itens.produto.preco}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Categoria" style=" text-align: center;">
+								<h:outputText value="#{itens.produto.categoria}" />
+							</p:column>
+							<p:column headerText="Descrição" style=" text-align: center;">
+								<h:outputText value="#{itens.produto.tipoProduto.descricao}" />
+							</p:column>
+							<p:column headerText="Quantidde" style=" text-align:center;">
+								<h:outputText value="#{itens.qtde}" />
+							</p:column>
+
+							<p:column headerText="Valor Parcial" style=" text-align: center;">
+								<h:outputText value="#{itens.valorTotal}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="" style=" text-align:center;">
+								<p:commandButton actionListener="#{vendaBean.excluirItem}"
+									id="excluir" styleClass="ui-button-danger" icon="pi pi-trash"
+									update=":mesagens :form:tabelaitens :form:valortotal"
+									process="@this">
+									<p:tooltip for="excluir" value="Excluir Item" showEffect="clip"
+										hideEffect="fold" />
+									<f:attribute name="itemSelecionado" value="#{itens}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+
+						<span style="padding-left: 760px;"></span>
+						<p:panel header="" id="valortotal" style="text-align:center;">
+							<p:outputLabel value="TOTAL  = "
+								style="font-weight: bold; font-size:25px;" />
+							<h:outputText value="#{vendaBean.venda.valorTotal}"
+								style="font-weight: bold; font-size:25px;">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+							<br />
+							<br />
+							<p:commandButton value="Pagamento" update=":form:lista"
+								styleClass="ui-button-raised "
+								style="font-weight: bold; font-size:25px;" icon="pi pi-wallet"
+								disabled="#{vendaBean.venda.valorTotal eq 0}"
+								oncomplete="PF('sidebar').show();" />
+						</p:panel>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:sidebar widgetVar="sidebar" position="right"
+					style="opacity:0.9; width: 1000px;overflow: auto;max-height: 800px;"
+					id="lista" blockScroll="true" dynamic="true">
+					<center>
+						<p:graphicImage library="imagens" name="logo1.png" width="250" />
+					</center>
+					<p:toolbar style="opacity:0.9;">
+						<p:toolbarGroup>
+							<p:panel style=" text-align: center;overflow: auto;">
+								<p:dataTable value="#{vendaBean.itensVenda}" var="itens">
+									<p:column headerText="" style=" text-align: center;">
+
+										<p:graphicImage value="#{vendaBean.carregarImagens(itens)}"
+											width="30" stream="false" />
+									</p:column>
+									<p:column headerText="Varlor Parcial"
+										style=" text-align: center;">
+										<h:outputText value="#{itens.valorTotal}">
+											<f:convertNumber type="currency" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Quantidade" style=" text-align:center;">
+										<h:outputText value="#{itens.qtde}" />
+									</p:column>
+								</p:dataTable>
+								<br />
+								<br />
+								<p:panelGrid columns="4">
+									<p:outputLabel value="#{bundle['cliente.nomeCliente']}"
+										style="font-weight: bold; padding-right:5px;" />
+									<p:selectOneMenu value="#{vendaBean.venda.cliente.idCliente}"
+										filter="true" style=" font-weight: bold; "
+										converter="#{clienteConverter}">
+										<f:selectItem itemLabel="Selecione o Cliente"
+											noSelectionOption="true" style=" font-weight: bold; " />
+										<f:selectItems value="#{vendaBean.lista}"
+											style=" font-weight: bold;" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Pagamento" for="status"
+										style="font-weight: bold; padding-right:5px;" />
+									<p:selectOneMenu
+										value="#{vendaBean.venda.tipoPagamento.descricao}"
+										style="font-weight: bold; ">
+										<f:selectItem itemLabel="Forma de Pagamento"
+											noSelectionOption="true" />
+										<f:selectItems value="#{vendaBean.tipoPagamento}" id="status" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Observação" for="descricao"
+										style="font-weight: bold; padding-right: 5px;" />
+									<p:inputTextarea value="#{vendaBean.venda.observacao}"
+										id="descricao" placeholder="Inserir a observação"
+										style=" font-weight: bold;" />
+
+								</p:panelGrid>
+								<br />
+								<div>
+									<h:outputText value="#{vendaBean.venda.data}"
+										style="font-weight: bold; font-size:25px;">
+										<f:convertDateTime pattern="dd/MM/yyyy " locale="pt_BR"
+											timeZone="America/Sao_Paulo" />
+									</h:outputText>
+								</div>
+								<br />
+								<div>
+									<p:outputLabel value="TOTAL  = " for="total"
+										style="font-weight: bold; font-size:25px;" />
+									<h:outputText value="#{vendaBean.venda.valorTotal}" id="total"
+										style="font-weight: bold; font-size:25px;">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</div>
+								<br />
+								<p:commandButton value="Finalizar o Pedido"
+									styleClass="ui-button-success"
+									actionListener="#{vendaBean.finalizarVenda}"
+									style="font-weight: bold; font-size:20px;"
+									update=":mesagens :form:tabelaitens :form:valortotal :form:lista :form:excluirTabela">
+									<p:confirm header="Confirmação"
+										message="Deseja realmente finalizar o pedido"
+										icon="pi pi-info-circle" />
+								</p:commandButton>
+							</p:panel>
+						</p:toolbarGroup>
+					</p:toolbar>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+						responsive="true" width="350">
+
+						<p:commandButton value="Não" type="button"
+							styleClass="ui-confirmdialog-no ui-button-flat" />
+						<p:commandButton value="Sim" type="button"
+							styleClass="ui-confirmdialog-yes ui-button-success" />
+					</p:confirmDialog>
+				</p:sidebar>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

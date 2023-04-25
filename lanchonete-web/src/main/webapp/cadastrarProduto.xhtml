@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<link rel="stylesheet" href="css/estilo.css" />
+	<h:outputStylesheet library="css" name="estilo.css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Lanchonete</title>
+</h:head>
+<h:body>
+	<ui:composition template="/_template.xhtml">
+		<ui:define name="conteudo">
+			<br />
+			<h:form id="form">
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar style="opacity:0.9">
+					<p:toolbarGroup>
+						<!-- botão para cadastrar produtos novos -->
+						<p:commandButton id="novo" value="#{bundle.novo}"
+							icon="pi pi-plus" update=":dialogs:manage-produto-content"
+							process="@this" oncomplete="PF('manageProdutoDialog').show()"
+							styleClass="ui-button-success" style="font-weight: bold;font-size:20px;margin-right: .5rem">
+							<p:tooltip for="novo" value="Novo Produto" showEffect="clip"
+								hideEffect="fold" />
+						</p:commandButton>
+						<span
+							style="font-weight: bold; font-size: 45px; padding-left: 600px;">#{bundle['produto.cadastro']}</span>
+						<!--  fim botão para cadastrar produtos novos -->
+						<p:dataTable value="#{produtobean.listaProdutos}" var="p" 
+							editable="true" id="tabelaProduto" widgetVar="Produtos"
+							style="font-weight: bold; font-size: 15px; 
+				fonte-family:Helvetica Neue, HElvetica, Arial, sans-serif;"
+							paginator="true" rows="7" stickyHeader="true" 
+							rowStyleClass="#{p.estoque.qtde le 10 ? 'estoqueBaixo':  
+                                             p.estoque.qtde le 20 ? 'estoqueMedio' : 
+                                             p.estoque.qtde le 5000 ? 'estoqueAlto': null }">
+							<f:facet name="header">
+								<div class="produtos-table-header">
+									<span style="font-weight: bold; font-size: 16px">Produtos</span>
+									<span class="filter-container ui-input-icon-left"> <i
+										class="pi pi-search"></i> <p:inputText id="globalFilter"
+											onkeyup="PF('Produtos').filter()"
+											placeholder="Pesquisar produtos" />
+									</span> <span
+										style="font-weight: bold; font-size: 16px; padding-left: 350px;">Estoque
+										Baixo <p:graphicImage library="imagens" name="red.png"
+											width="20" />
+									</span> <span
+										style="font-weight: bold; font-size: 16px; padding-left: 20px;">Estoque
+										em Alerta <p:graphicImage library="imagens" name="orange.png"
+											width="20" />
+									</span> <span
+										style="font-weight: bold; font-size: 16px; padding-left: 20px;">Estoque
+										Normal <p:graphicImage library="imagens" name="verde.png"
+											width="20" />
+									</span>
+								</div>
+							</f:facet>
+							<p:column headerText="#{bundle['produto.nome']}"
+								sortBy="#{p.nome}" filterBy="#{p.nome} "
+								style=" text-align: center;">
+								<h:outputText value="#{p.nome}" />
+							</p:column>
+							<p:column headerText="Imagem" style=" text-align: center;">
+								<p:graphicImage value="#{produtobean.carregarImagens(p)}"
+									width="60" stream="false" />
+							</p:column>
+							<p:column headerText="#{bundle['produto.preco']}" width="90"
+								style=" text-align: center;">
+								<h:outputText value="#{p.preco}" width="90">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="#{bundle['fornecedor.razao']}"
+								style=" text-align: center;">
+								<h:outputText value="#{p.fornecedor.razaoSocial}" />
+							</p:column>
+							<p:column headerText="Categoria" width="90"
+								style=" text-align: center;">
+								<h:outputText value="#{p.categoria}" width="90" />
+							</p:column>
+							<p:column headerText="#{bundle['produto.codigo']}" width="90"
+								style=" text-align:center;">
+								<p:barcode value="#{p.codigoBarra}" type="int2of5" />
+							</p:column>
+							<p:column headerText="#{bundle['tipoproduto.codigo']}" width="90"
+								style=" text-align:center;">
+								<h:outputText value="#{p.tipoProduto.codigo}" width="90" />
+							</p:column>
+							<p:column headerText="#{bundle['tipoproduto.descricao']}"
+								style=" text-align:center;">
+								<h:outputText value="#{p.tipoProduto.descricao}" />
+							</p:column>
+							<p:column headerText="Estoque" width="90"
+								style="text-align:center;">
+								<h:outputText value="#{p.estoque.qtde}" width="90" />
+							</p:column>
+							<p:column headerText="" style=" text-align:center;" width="90">
+								<p:commandButton id="editar" icon="pi pi-pencil"
+									oncomplete="PF('manageProdutoDialog').show()"
+									update=":dialogs:manage-produto-content" process="@this">
+									<f:setPropertyActionListener value="#{p}"
+										target="#{produtobean.produto}" />
+									<p:tooltip for="editar" value="Editar Produto"
+										showEffect="clip" hideEffect="fold" />
+								</p:commandButton>
+								<font></font>
+								<font></font>
+								<p:commandButton
+									actionListener="#{produtobean.excluirProduto(p)}" id="excluir"
+									styleClass="ui-button-danger" icon="pi pi-trash" 
+									update="form tabelaProduto" process="@this">
+										<p:confirm header="Confirmação"
+										message="Deseja excluir este Produto ?"
+										icon="pi pi-info-circle" />
+									<p:tooltip for="excluir" value="Excluir Produto"
+										showEffect="clip" hideEffect="fold" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+					responsive="true" width="350">
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no ui-button-flat" />
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes ui-button-danger" />
+				</p:confirmDialog>
+			</h:form>
+
+			<h:form id="dialogs" enctype="multipart/form-data">
+				<p:growl id="messages" showDetail="true" />
+				<p:dialog header="#{bundle['produto.cadastro']}" showEffect="fade" 
+					style="opacity:0.9;" maximizable="true" minimizable="true" 
+					modal="true" widgetVar="manageProdutoDialog" responsive="true">
+					<p:toolbar>
+						<p:toolbarGroup>
+							<p:outputPanel id="manage-produto-content" class="ui-fluid">
+								<h:panelGrid id="pnResultado" columns="2" cellspacing="5"
+									cellpadding="5">
+									<p:outputLabel
+										style="font-weight: bold; padding-right: 5px; float: right;"
+										size="60" />
+									<p:inputText type="hidden"
+										value="#{produtobean.produto.idProduto}" size="60" />
+									<p:outputLabel
+										style="font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputText type="hidden"
+										value="#{produtobean.produto.imagem.caminhoImagem}" />
+
+									<p:outputLabel value="#{bundle['produto.nome']}" for="nome"
+										style="font-weight: bold; padding-right: 5px; float: right; height:40px;" />
+									<p:inputText value="#{produtobean.produto.nome}" id="nome"
+										required="true" style=" font-weight: bold; "
+										requiredMessage="O nome e Obrigatorio!!"
+										placeholder="Insira o Nome" size="40" />
+
+									<p:outputLabel value="Imagem"
+										style="font-weight: bold; padding-right: 20px; float: right;  height:30px" />
+									<p:fileUpload value="#{produtobean.file}" mode="simple"
+										style=" font-weight: bold; height:30px;" required="true"
+										requiredMessage="A imagem e Obrigatorio!!" />
+
+									<p:outputLabel value="#{bundle['produto.preco']}" for="preco"
+										style="font-weight: bold; padding-right: 5px; float: right; " />
+									<p:inputNumber value="#{produtobean.produto.preco}" id="preco"
+										style=" font-weight: bold; " roundMethod="S" decimalPlaces="2"
+										symbol="R$" required="true" size="5"
+										requiredMessage="O preço e Obrigatorio!!" decimalSeparator=","
+										thousandSeparator="." readonly="false" />
+
+
+									<p:outputLabel value="#{bundle['fornecedor.razao']}"
+										for="razao"
+										style="font-weight: bold; padding-right: 5px; float: right;" />
+									<p:selectOneMenu 
+										value="#{produtobean.produto.fornecedor.idFornecedor}"
+										style=" font-weight: bold; " id="razao"
+										converter="#{fornecedorConverter}" required="true"
+										requiredMessage="O fornecedor e Obrigatorio!!">
+										<f:selectItem itemLabel="Selecione o fornecedor" 
+											noSelectionOption="true" style=" font-weight: bold;" />
+										<f:selectItems value="#{produtobean.lista}" 
+											style=" font-weight: bold;" />
+									</p:selectOneMenu>
+
+									<p:outputLabel for="categoria" value="Categoria"
+										style="font-weight: bold; padding-right: 5px; float: right;overflow: auto;" />
+									<p:selectOneRadio id="categoria"
+										value="#{produtobean.produto.categoria}" layout="responsive"
+										columns="2" required="true">
+										<f:selectItem itemLabel="Bebidas" itemValue="Bedidas" />
+										<f:selectItem itemLabel="Petiscos" itemValue="Petiscos" />
+										<f:selectItem itemLabel="Hamburguer" itemValue="Hamburguer" />
+										<f:selectItem itemLabel="Combos" itemValue="Combos" />
+									</p:selectOneRadio>
+
+									<p:outputLabel value="#{bundle['produto.codigo']}" for="codigo"
+										style="font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputMask value="#{produtobean.produto.codigoBarra}"
+										mask="9999999999" id="codigo" validateMask="true"
+										style=" font-weight: bold;" required="true"
+										requiredMessage="O codigo de barra e obrigatório !!"
+										placeholder="Insira o codigo de barra" size="15" />
+
+									<p:outputLabel value="#{bundle['tipoproduto.codigo']}"
+										for="cod"
+										style="font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputText value="#{produtobean.produto.tipoProduto.codigo}"
+										id="cod" placeholder="Inserir o codigo" required="true"
+										style=" font-weight: bold;"
+										requiredMessage="O codigo produto e obrigatório !!" size="15" />
+
+									<p:outputLabel value="#{bundle['tipoproduto.descricao']}"
+										for="descricao"
+										style="font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputTextarea
+										value="#{produtobean.produto.tipoProduto.descricao}"
+										id="descricao" placeholder="Inserir a descrição"
+										required="true" style=" font-weight: bold;"
+										requiredMessage="A descrição e obrigatório !!" size="25" />
+
+									<p:outputLabel for="qtd" value="Estoque"
+										style="font-weight: bold; padding-right: 5px; float: right;" />
+									<p:spinner id="qtd" min="0"
+										value="#{produtobean.produto.estoque.qtde}" required="true"
+										requiredMessage="O estoque e obrigatório !!" size="5" />
+										
+								</h:panelGrid>
+							</p:outputPanel>
+
+						</p:toolbarGroup>
+					</p:toolbar>
+					<f:facet name="footer">
+						<p:commandButton value="#{bundle.salvar}" id="salvar"
+							styleClass="ui-button-info"
+							action="#{produtobean.cadastrarProduto}" icon="pi pi-save"
+							process="manage-produto-content @this"
+							update="form manage-produto-content" style="margin-tpo:10pix" />
+						<p:tooltip for="salvar" value="Salvar Produto" showEffect="clip"
+							hideEffect="fold" />
+						<font></font>
+						<font></font>
+
+
+						<p:commandButton value="Cancel" icon="pi pi-times"
+							onclick="PF('manageProdutoDialog').hide()"
+							class="ui-button-secondary" type="button" />
+					</f:facet>
+
+				</p:dialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

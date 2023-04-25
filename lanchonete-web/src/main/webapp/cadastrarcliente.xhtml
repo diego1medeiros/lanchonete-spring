@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+	<link rel="stylesheet" href="css/estilo.css" />
+	<h:outputStylesheet library="css" name="estilo.css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Lanchonete</title>
+</h:head>
+<h:body>
+	<ui:composition template="/_template.xhtml">
+		<ui:define name="conteudo">
+			<br />
+			<h:form id="form">
+				<p:growl showDetail="true" />
+				<p:toolbar style="opacity:0.9">
+					<p:toolbarGroup>
+						<!-- botão para cadastrar Clientes novos -->
+						<p:commandButton id="novo" value="#{bundle.novo}"
+							icon="pi pi-plus" update=":dialogs:manage-product-content"
+							process="@this" oncomplete="PF('manageProductDialog').show()"
+							styleClass="ui-button-success"
+							style="font-weight: bold;font-size:20px;margin-right: .5rem">
+							<p:tooltip for="novo" value="Novo Cliente" showEffect="clip"
+								hideEffect="fold" />
+						</p:commandButton>
+						<span
+							style="font-weight: bold; font-size: 45px; padding-left: 600px;">#{bundle['cadastro.cliente']}</span>
+
+						<!-- Listar todos os clientes cadastrados no banco de dados  -->
+						<p:dataTable value="#{clientebean.listaClientes}" var="c"
+							id="tabelaCliente" widgetVar="Clientes" rowKey="#{c.id}"
+							style="font-weight: bold ;font-size: 14px;
+				fonte-family:Helvetica Neue, HElvetica, Arial, sans-serif;"
+							paginator="true" rows="7" stickyHeader="true">
+							<f:facet name="header">
+								<div class="clientes-table-header">
+									<span style="font-weight: bold; font-size: 16px">Clientes</span>
+									<span class="filter-container ui-input-icon-left"> <i
+										class="pi pi-search"></i> <p:inputText id="globalFilter"
+											onkeyup="PF('Clientes').filter()"
+											placeholder="Pesquisar clientes" />
+									</span>
+								</div>
+							</f:facet>
+							<p:column headerText="#{bundle['cliente.nome']}"
+								sortBy="#{c.nome}" filterBy="#{c.nome}"
+								style=" text-align: center;">
+								<h:outputText value="#{c.nome}" />
+							</p:column>
+							<p:column headerText="#{bundle['cliente.cpf']}" sortBy="#{c.cpf}"
+								style=" text-align: center;">
+								<h:outputText value="#{c.cpf}" />
+							</p:column>
+							<p:column headerText="#{bundle['cliente.telefone']}"
+								style=" text-align: center;" sortBy="#{c.telefone}">
+								<h:outputText value="#{c.telefone}" />
+							</p:column>
+							<p:column headerText="#{bundle['cliente.email']}"
+								style=" text-align: center;" sortBy="#{c.email}">
+								<h:outputText value="#{c.email}" />
+							</p:column>
+							<p:column headerText="#{bundle['endereco.cep']}"
+								style=" text-align: center;" sortBy="#{c.endereco.cep}">
+								<h:outputText value="#{c.endereco.cep}" />
+							</p:column>
+							<p:column headerText="#{bundle['endereco.bairro']}"
+								style=" text-align: center;" sortBy="#{c.endereco.bairro}">
+								<h:outputText value="#{c.endereco.bairro}" />
+							</p:column>
+							<p:column headerText="#{bundle['endereco.cidade']}"
+								style=" text-align: center;" sortBy="#{c.endereco.cidade}">
+								<h:outputText value="#{c.endereco.cidade}" />
+							</p:column>
+							<p:column headerText="#{bundle['endereco.estado']}"
+								style=" text-align: center;" sortBy="#{c.endereco.estado}">
+								<h:outputText value="#{c.endereco.estado}" />
+							</p:column>
+							<p:column headerText="#{bundle['endereco.rua']}"
+								style=" text-align: center;" sortBy="#{c.endereco.rua}">
+								<h:outputText value="#{c.endereco.rua}" />
+							</p:column>
+							<p:column headerText="#{bundle['endereco.numero']}"
+								style=" text-align: center;" sortBy="#{c.endereco.numero}">
+								<h:outputText value="#{c.endereco.numero}" />
+							</p:column>
+
+
+							<!-- botão de excluir e editar clientes do banco de dados  -->
+							<br />
+							<br />
+							<p:column headerText="" width="100" exportable="false">
+								<p:commandButton id="editar" icon="pi pi-pencil"
+									oncomplete="PF('manageProductDialog').show()"
+									update=":dialogs:manage-product-content" process="@this">
+									<f:setPropertyActionListener value="#{c}"
+										target="#{clientebean.cliente}" />
+									<p:tooltip for="editar" value="Editar Cliente"
+										showEffect="clip" hideEffect="fold" />
+									<p:resetInput target=":dialogs:manage-product-content" />
+								</p:commandButton>
+								<font></font>
+								<font></font>
+								<p:commandButton action="#{clientebean.excluirCliente(c)}"
+									id="excluir" styleClass="ui-button-danger" icon="pi pi-trash"
+									update="form tabelaCliente" process="@this">
+									<p:confirm header="Confirmação"
+										message="Deseja excluir este Cliente?"
+										icon="pi pi-info-circle" />
+									<p:tooltip for="excluir" value="Excluir Cliente"
+										showEffect="clip" hideEffect="fold" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+					responsive="true" width="350">
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no ui-button-flat" />
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes ui-button-danger" />
+				</p:confirmDialog>
+
+			</h:form>
+			<h:form id="dialogs">
+
+				<!-- abre dialogo para digitar os dados dos clientes novos e atualizar clientes que ja existem no banco de dados  -->
+				<p:dialog header="#{bundle['cadastro.cliente']}" showEffect="fade"
+					style="opacity:0.9; " maximizable="true" minimizable="true"
+					modal="true" widgetVar="manageProductDialog" responsive="true">
+					<p:toolbar>
+						<p:toolbarGroup>
+							<p:outputPanel id="manage-product-content" class="ui-fluid">
+								<h:panelGrid id="pnResultado" columns="2" cellspacing="6"
+									cellpadding="6">
+
+									<p:outputLabel
+										style="font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputText type="hidden" value="#{clientebean.cliente.id}" />
+									<p:outputLabel value="#{bundle['cliente.nome']}" for="nome"
+										style="font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputText value="#{clientebean.cliente.nome}" id="nome"
+										required="true" style=" font-weight: bold; "
+										requiredMessage="O nome e Obrigatorio!!"
+										placeholder="digite o Nome" size="45" />
+
+									<p:outputLabel value="#{bundle['cliente.cpf']}" for="cpf"
+										style=" font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputMask value="#{clientebean.cliente.cpf}" id="cpf"
+										required="true" mask="999.999.999-99"
+										style=" font-weight: bold;" validateMask="true"
+										requiredMessage="O cpf e obrigatório !!"
+										placeholder="digite o cpf" size="15" />
+
+									<p:outputLabel value="#{bundle['cliente.telefone']}"
+										for="telefone"
+										style=" font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputMask value="#{clientebean.cliente.telefone}"
+										id="telefone" required="true" mask="(99) 99999-9999"
+										style=" font-weight: bold;" validateMask="true"
+										requiredMessage="O telefone e obrigatório !!"
+										placeholder="digite o telefone" size="15" />
+
+									<p:outputLabel value="#{bundle['cliente.email']}" for="email"
+										style=" font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputText value="#{clientebean.cliente.email}" id="email"
+										validateMask="true" style=" font-weight: bold; "
+										required="true" requiredMessage="O email e obrigatório !!"
+										placeholder="digite o email" size="45" />
+
+									<p:outputLabel value="#{bundle['endereco.cep']}" for="cep"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputMask mask="99999-999" id="cep" style="font-weight:bold"
+										value="#{clientebean.cliente.endereco.cep}" size="15"
+										placeholder="digite o cep">
+										<p:commandButton icon="pi pi-search"
+											update="form manage-product-content"
+											action="#{clientebean.encontraCEP}" />
+
+									</p:inputMask>
+									<p:outputLabel value="#{bundle['endereco.estado']}"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText size="15" style="font-weight:bold"
+										placeholder="digite o estado"
+										value="#{clientebean.cliente.endereco.estado}" />
+
+									<p:outputLabel value="#{bundle['endereco.cidade']}"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText style="font-weight:bold"
+										value="#{clientebean.cliente.endereco.cidade}"
+										placeholder="digite a cidade" size="15" />
+
+									<p:outputLabel value="#{bundle['endereco.bairro']}"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText size="45" style="font-weight:bold"
+										value="#{clientebean.cliente.endereco.bairro}"
+										placeholder="digite o bairro" />
+
+									<p:outputLabel value="#{bundle['endereco.rua']}" for="rua"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText size="45" id="rua" style="font-weight:bold"
+										value="#{clientebean.cliente.endereco.rua}"
+										placeholder="digite a rua" />
+
+									<p:outputLabel value="#{bundle['endereco.numero']}"
+										for="numero"
+										style=" font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputText value="#{clientebean.cliente.endereco.numero}"
+										id="numero" placeholder="digite o numero"
+										style=" font-weight: bold;" size="15" />
+								</h:panelGrid>
+							</p:outputPanel>
+						</p:toolbarGroup>
+					</p:toolbar>
+					<f:facet name="footer">
+						<!--bOTAO DE SALVAR O CLIENTE -->
+						<center>
+							<p:commandButton value="#{bundle.salvar}" id="salvar"
+								styleClass="ui-button-info"
+								process="manage-product-content @this"
+								action="#{clientebean.cadastrar}" icon="pi pi-save"
+								update="form manage-product-content" style="margin-tpo:10pix" />
+							<p:tooltip for="salvar" value="Salvar Cliente" showEffect="clip"
+								hideEffect="fold" />
+							<font></font> <font></font>
+							<p:commandButton value="Cancel" icon="pi pi-times"
+								onclick="PF('manageProductDialog').hide()"
+								class="ui-button-secondary" type="button" />
+						</center>
+					</f:facet>
+				</p:dialog>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
