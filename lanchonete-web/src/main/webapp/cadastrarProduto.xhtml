@@ -35,9 +35,9 @@
 							style="font-weight: bold; font-size: 15px; 
 				fonte-family:Helvetica Neue, HElvetica, Arial, sans-serif;"
 							paginator="true" rows="7" stickyHeader="true" 
-							rowStyleClass="#{p.estoque.qtde le 10 ? 'estoqueBaixo':  
-                                             p.estoque.qtde le 20 ? 'estoqueMedio' : 
-                                             p.estoque.qtde le 5000 ? 'estoqueAlto': null }">
+							rowStyleClass="#{p.estoque le 10 ? 'estoqueBaixo':  
+                                             p.estoque le 20 ? 'estoqueMedio' : 
+                                             p.estoque le 5000 ? 'estoqueAlto': null }">
 							<f:facet name="header">
 								<div class="produtos-table-header">
 									<span style="font-weight: bold; font-size: 16px">Produtos</span>
@@ -89,15 +89,15 @@
 							</p:column>
 							<p:column headerText="#{bundle['tipoproduto.codigo']}" width="90"
 								style=" text-align:center;">
-								<h:outputText value="#{p.tipoProduto.codigo}" width="90" />
+								<h:outputText value="#{p.codigoProduto}" width="90" />
 							</p:column>
 							<p:column headerText="#{bundle['tipoproduto.descricao']}"
 								style=" text-align:center;">
-								<h:outputText value="#{p.tipoProduto.descricao}" />
+								<h:outputText value="#{p.descricao}" />
 							</p:column>
 							<p:column headerText="Estoque" width="90"
 								style="text-align:center;">
-								<h:outputText value="#{p.estoque.qtde}" width="90" />
+								<h:outputText value="#{p.estoque}" width="90" />
 							</p:column>
 							<p:column headerText="" style=" text-align:center;" width="90">
 								<p:commandButton id="editar" icon="pi pi-pencil"
@@ -147,11 +147,11 @@
 										style="font-weight: bold; padding-right: 5px; float: right;"
 										size="60" />
 									<p:inputText type="hidden"
-										value="#{produtobean.produto.idProduto}" size="60" />
+										value="#{produtobean.produto.id}" size="60" />
 									<p:outputLabel
 										style="font-weight: bold; padding-right: 5px; float: right;" />
 									<p:inputText type="hidden"
-										value="#{produtobean.produto.imagem.caminhoImagem}" />
+										value="#{produtobean.produto.caminhoImagem}" />
 
 									<p:outputLabel value="#{bundle['produto.nome']}" for="nome"
 										style="font-weight: bold; padding-right: 5px; float: right; height:40px;" />
@@ -179,13 +179,13 @@
 										for="razao"
 										style="font-weight: bold; padding-right: 5px; float: right;" />
 									<p:selectOneMenu 
-										value="#{produtobean.produto.fornecedor.idFornecedor}"
+										value="#{produtobean.produto.fornecedor.id}"
 										style=" font-weight: bold; " id="razao"
 										converter="#{fornecedorConverter}" required="true"
 										requiredMessage="O fornecedor e Obrigatorio!!">
 										<f:selectItem itemLabel="Selecione o fornecedor" 
 											noSelectionOption="true" style=" font-weight: bold;" />
-										<f:selectItems value="#{produtobean.lista}" 
+										<f:selectItems value="#{produtobean.lista}"
 											style=" font-weight: bold;" />
 									</p:selectOneMenu>
 
@@ -211,7 +211,7 @@
 									<p:outputLabel value="#{bundle['tipoproduto.codigo']}"
 										for="cod"
 										style="font-weight: bold; padding-right: 5px; float: right;" />
-									<p:inputText value="#{produtobean.produto.tipoProduto.codigo}"
+									<p:inputText value="#{produtobean.produto.codigoProduto}"
 										id="cod" placeholder="Inserir o codigo" required="true"
 										style=" font-weight: bold;"
 										requiredMessage="O codigo produto e obrigatório !!" size="15" />
@@ -220,7 +220,7 @@
 										for="descricao"
 										style="font-weight: bold; padding-right: 5px; float: right;" />
 									<p:inputTextarea
-										value="#{produtobean.produto.tipoProduto.descricao}"
+										value="#{produtobean.produto.descricao}"
 										id="descricao" placeholder="Inserir a descrição"
 										required="true" style=" font-weight: bold;"
 										requiredMessage="A descrição e obrigatório !!" size="25" />
@@ -228,7 +228,7 @@
 									<p:outputLabel for="qtd" value="Estoque"
 										style="font-weight: bold; padding-right: 5px; float: right;" />
 									<p:spinner id="qtd" min="0"
-										value="#{produtobean.produto.estoque.qtde}" required="true"
+										value="#{produtobean.produto.estoque}" required="true"
 										requiredMessage="O estoque e obrigatório !!" size="5" />
 										
 								</h:panelGrid>

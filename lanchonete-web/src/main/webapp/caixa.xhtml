@@ -65,7 +65,7 @@
 
 						<p:outputLabel value="Funcionario" />
 						<p:selectOneMenu converter="#{funcionarioConverter}" filter="true"
-							value="#{caixaBean.movimentacaoCaixa.funcionario.idFuncionario}">
+							value="#{caixaBean.movimentacaoCaixa.funcionario.id}">
 							<f:selectItem noSelectionOption="true"
 								itemLabel="Selecione o Funcionario" />
 							<f:selectItems value="#{caixaBean.listaNomeFuncioanrio}" />
@@ -100,7 +100,7 @@
 						
 						<p:column headerText="Data Do Fechamento" 
 							style=" text-align: center;">
-							<h:outputText value="#{caixa.data}" />
+							<h:outputText value="#{caixaBean.getformatarData(caixa.data)}" />
 						</p:column>
 						<p:column headerText="Valor do Caixa" style=" text-align: center;">
 							<h:outputText value="#{caixa.valorCaixa}">

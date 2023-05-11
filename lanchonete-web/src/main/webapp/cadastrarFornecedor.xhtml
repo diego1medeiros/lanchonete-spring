@@ -33,7 +33,7 @@
 						<!--  fim botão para cadastrar fornecedores novos -->
 
 						<p:dataTable value="#{fornecedorbean.listaFornecedores}" var="f"
-							widgetVar="Fornecedores" rowKey="#{f.idFornecedor}" id="tabela"
+							widgetVar="Fornecedores" rowKey="#{f.id}" id="tabela"
 							style="font-weight: bold; opacity:0.9; font-size: 14px;
 				fonte-family:Helvetica Neue, HElvetica, Arial, sans-serif;"
 							paginator="true" rows="7" stickyHeader="true">
@@ -139,7 +139,7 @@
 									<p:outputLabel
 										style="font-weight: bold; padding-right: 5px; float: right;" />
 									<p:inputText type="hidden"
-										value="#{fornecedorbean.fornecedor.idFornecedor}" />
+										value="#{fornecedorbean.fornecedor.id}" />
 									<p:outputLabel value="#{bundle['fornecedor.razao']}" for="nome"
 										style="font-weight: bold; padding-right: 5px; float: right;" />
 									<p:inputText value="#{fornecedorbean.fornecedor.razaoSocial}"

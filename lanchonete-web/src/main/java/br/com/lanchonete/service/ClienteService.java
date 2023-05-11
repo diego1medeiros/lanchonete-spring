@@ -16,7 +16,6 @@ public class ClienteService {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(BASE_URI).path("/lanchonete/listarcliente");
 		String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
-		System.out.println(response);
 		return response;
 	}
 

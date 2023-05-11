@@ -1,5 +1,8 @@
-package br.com.lanchonete.dto;
+package br.com.lanchonete.dto.Clientedto;
 
-public record DadosCadastroCliente(String nome, String cpf, String telefone, String email,DadosEndereco endereco) {
+import br.com.lanchonete.dto.Enderecodto.DadosEndereco;
+
+public record DadosCadastroCliente(Long id, String nome, String cpf, String telefone, String email,
+		DadosEndereco endereco) {
 
 }

@@ -1,8 +1,7 @@
 package br.com.lanchonete.entity;
 
-
-import br.com.lanchonete.dto.DadosAtualizarCliente;
-import br.com.lanchonete.dto.DadosCadastroCliente;
+import br.com.lanchonete.dto.Clientedto.DadosAtualizarCliente;
+import br.com.lanchonete.dto.Clientedto.DadosCadastroCliente;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

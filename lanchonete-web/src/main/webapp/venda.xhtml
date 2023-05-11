@@ -25,7 +25,7 @@
 				fonte-family:Helvetica Neue, HElvetica, Arial, sans-serif;"
 						paginator="true" rows="5">
 						<p:column headerText="Pedido" style=" text-align: center;">
-							<h:outputText value="#{venda.idVenda}" />
+							<h:outputText value="#{venda.id}" />
 						</p:column>
 						<p:column headerText="Cliente" style=" text-align: center;">
 							<h:outputText value="#{venda.cliente.nome}" />
@@ -93,18 +93,18 @@
 					</p:commandButton>
 				</p:panel>
 
-				<p:dataView var="produto" value="#{vendaBean.listaProdutos}"
+				<p:dataView var="produto" value="#{produtobean.listaProdutos}"
 					style="opacity:0.9;" rows="12" id="tabela" layout="grid"
 					gridIcon="pi pi-shopping-cart" icon="pi pi-shopping-cart">
 					<p:dataViewGridItem>
 						<p:panel header="#{produto.nome}" style=" text-align:center;"
-							rendered="#{produto.estoque.qtde >= 1}">
+							rendered="#{produto.estoque >= 1}">
 							<i class="pi pi-tag product-category-icon" />
 							<h:outputText value="#{produto.categoria}"
 								style="font-weight: bold;" />
 							<br />
 							<br />
-							<h:outputText value="#{produto.tipoProduto.descricao}"
+							<h:outputText value="#{produto.descricao}"
 								style="font-weight: bold;" />
 							<br />
 							<br />
@@ -120,7 +120,7 @@
 							<p:commandButton value="Adicionar ao carrinho"
 								icon="pi pi-shopping-cart"
 								actionListener="#{vendaBean.adicionarItens}" process="@this"
-								disabled="#{produto.estoque.qtde eq 0}"
+								disabled="#{produto.estoque eq 0}"
 								update=":mesagens :form:tabelaitens :form:valortotal :form:lista :form:excluirTabela">
 								<f:attribute name="produtoSelecionado" value="#{produto}" />
 							</p:commandButton>
@@ -158,7 +158,7 @@
 								<h:outputText value="#{itens.produto.categoria}" />
 							</p:column>
 							<p:column headerText="Descrição" style=" text-align: center;">
-								<h:outputText value="#{itens.produto.tipoProduto.descricao}" />
+								<h:outputText value="#{itens.produto.descricao}" />
 							</p:column>
 							<p:column headerText="Quantidde" style=" text-align:center;">
 								<h:outputText value="#{itens.qtde}" />
@@ -229,12 +229,12 @@
 								<p:panelGrid columns="4">
 									<p:outputLabel value="#{bundle['cliente.nomeCliente']}"
 										style="font-weight: bold; padding-right:5px;" />
-									<p:selectOneMenu value="#{vendaBean.venda.cliente.idCliente}"
+									<p:selectOneMenu value="#{vendaBean.venda.cliente.id}"
 										filter="true" style=" font-weight: bold; "
 										converter="#{clienteConverter}">
 										<f:selectItem itemLabel="Selecione o Cliente"
 											noSelectionOption="true" style=" font-weight: bold; " />
-										<f:selectItems value="#{vendaBean.lista}"
+										<f:selectItems value="#{clientebean.lista}"
 											style=" font-weight: bold;" />
 									</p:selectOneMenu>
 

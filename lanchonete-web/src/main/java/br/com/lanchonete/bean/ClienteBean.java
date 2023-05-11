@@ -1,11 +1,14 @@
 package br.com.lanchonete.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -77,6 +80,20 @@ public class ClienteBean implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "CEP não foi encontrado", "CEP não foi encontrado"));
 		}
 	}
+	
+
+	 //lista o nome dos clientes vindo do banco no selecitens
+	public List<SelectItem> getLista() {
+		List<SelectItem> lista = new ArrayList<SelectItem>();
+		String json = clienteService.listaCliente();
+		Gson gson = new Gson();
+		ClienteDto[] listaClientes = gson.fromJson(json, ClienteDto[].class);
+		for (ClienteDto cliente : listaClientes) {
+			lista.add(new SelectItem(cliente.getId(), cliente.getNome()));
+		}
+		return lista;
+	}
+	
 	// limpar dados da tela
 	public void limpar() {
 		cliente = new ClienteDto();

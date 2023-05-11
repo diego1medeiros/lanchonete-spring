@@ -1,6 +1,6 @@
 package br.com.lanchonete.entity;
 
-import br.com.lanchonete.dto.DadosEndereco;
+import br.com.lanchonete.dto.Enderecodto.DadosEndereco;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -37,7 +37,7 @@
 
 						<p:dataTable value="#{funcionariobean.listaFuncionarios}" var="f"
 							id="tabelaFuncionario" widgetVar="Funcionarios"
-							rowKey="#{f.idFuncionario}"
+							rowKey="#{f.id}"
 							style="font-weight: bold; font-size: 14px;
 				fonte-family:Helvetica Neue, HElvetica, Arial, sans-serif;"
 							paginator="true" rows="7" stickyHeader="true"
@@ -111,10 +111,7 @@
 								style=" text-align: center;">
 								<h:outputText value="#{f.senha}" />
 							</p:column>
-							<p:column headerText="#{bundle['perfil.codigo']}"
-								style=" text-align: center;">
-								<h:outputText value="#{f.perfil.codigo}" />
-							</p:column>
+							
 							<br />
 							<br />
 							<p:column headerText="" width="100" style=" text-align: center;">
@@ -217,14 +214,6 @@
 										thousandSeparator="." readonly="false"
 										placeholder="digite o Salario" />
 
-									<p:outputLabel value="#{bundle['funcionario.codigo']}"
-										for="codigo"
-										style="font-weight:bold; padding-right: 5px; float: right;" />
-									<p:inputText
-										value="#{funcionariobean.funcionario.perfil.codigo}"
-										id="codigo" placeholder=" digite a matricula"
-										style=" font-weight: bold;" size="15" />
-
 									<p:outputLabel value="#{bundle['funcionario.login']}"
 										for="login"
 										style="font-weight:bold; padding-right: 5px; float: right;" />
@@ -287,7 +276,7 @@
 									<p:outputLabel
 										style="font-weight:bold; padding-right: 5px; float: right;" />
 									<p:inputText type="hidden"
-										value="#{funcionariobean.funcionario.idFuncionario}" />
+										value="#{funcionariobean.funcionario.id}" />
 										
 								</h:panelGrid>
 							</p:outputPanel>

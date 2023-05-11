@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.lanchonete.dto.DadosAtualizarCliente;
-import br.com.lanchonete.dto.DadosCadastroCliente;
-import br.com.lanchonete.dto.DadosListagemCliente;
+import br.com.lanchonete.dto.Clientedto.DadosAtualizarCliente;
+import br.com.lanchonete.dto.Clientedto.DadosCadastroCliente;
+import br.com.lanchonete.dto.Clientedto.DadosListagemCliente;
 import br.com.lanchonete.entity.Cliente;
 import br.com.lanchonete.repository.ClienteRepository;
 
