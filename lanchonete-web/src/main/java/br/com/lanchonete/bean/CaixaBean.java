@@ -1,9 +1,7 @@
 package br.com.lanchonete.bean;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -27,7 +25,7 @@ import br.com.lanchonete.dto.MovimentacaoCaixaDto;
 import br.com.lanchonete.service.CaixaService;
 import br.com.lanchonete.service.FuncionarioService;
 import br.com.lanchonete.service.VendaService;
-import br.com.lanchonete.utils.FormataData;
+import br.com.lanchonete.utils.FormatarData;
 import br.com.lanchonete.utils.Message;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,18 +55,7 @@ public class CaixaBean implements Serializable {
 		caixas = new DefaultScheduleModel();
 		movimentacaoCaixa = new MovimentacaoCaixaDto();
 		movimentacaoCaixas = listarMovimentacaoCaixa();
-		for (MovimentacaoCaixaDto movimentacaoCaixa : movimentacaoCaixas) {
-			DefaultScheduleEvent<?> evento = new DefaultScheduleEvent<>();
-			Instant instant = movimentacaoCaixa.getData().toInstant();
-			LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-			evento.setStartDate(localDateTime);
-			evento.setId(movimentacaoCaixa.getId().toString());
-			evento.setDescription(movimentacaoCaixa.getObservacao());
-			evento.setTitle("Caixa está Fechado");
-			evento.setAllDay(true);
-			evento.setEditable(true);
-			caixas.addEvent(evento);
-		}
+		caixas = listarDadosDoCaixaFechedo();
 	}
 
 	public List<MovimentacaoCaixaDto> listarMovimentacaoCaixa() {
@@ -79,22 +66,22 @@ public class CaixaBean implements Serializable {
 		return movimentacao;
 	}
 
-	public void novo(SelectEvent<LocalDateTime> selectEvent) {
+	public void criarNovoCaixa(SelectEvent<LocalDateTime> selectEvent) {
 		LocalDateTime localDateTime = selectEvent.getObject();
 		Double valorTotal = caixaService.valorTotalDoCaixa(localDateTime);
 		if (valorTotal == null) {
 			movimentacaoCaixa = new MovimentacaoCaixaDto();
-			movimentacaoCaixa.setData(Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+			movimentacaoCaixa.setData(FormatarData.converterLocalDateParaDate(localDateTime));
 			Message.warr("Não foi aberto nenhum caixa nesse dia!!!", "");
 		} else {
 			movimentacaoCaixa = new MovimentacaoCaixaDto();
-			movimentacaoCaixa.setData(Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+			movimentacaoCaixa.setData(FormatarData.converterLocalDateParaDate(localDateTime));
 			movimentacaoCaixa.setValorTotal(valorTotal);
 			Message.warr("Caixa está aberto!!!", "");
 		}
 	}
 
-	public void selecionado(SelectEvent<?> selectEvent) {
+	public void selecionadoCaixa(SelectEvent<?> selectEvent) {
 		ScheduleEvent<?> evento = (ScheduleEvent<?>) selectEvent.getObject();
 		for (MovimentacaoCaixaDto caixa : movimentacaoCaixas) {
 			Long id = Long.valueOf(evento.getId());
@@ -144,7 +131,38 @@ public class CaixaBean implements Serializable {
 	}
 
 	public String getformatarData(Date data) {
-		return FormataData.formatarData(data);
+		return FormatarData.formatarData(data);
+	}
+	public ScheduleModel listarDadosDoCaixaFechedo() {
+		ScheduleModel caixas = new DefaultScheduleModel();
+		List<MovimentacaoCaixaDto> movimentacaoCaixas = listarMovimentacaoCaixa();
+		for (MovimentacaoCaixaDto movimentacaoCaixa : movimentacaoCaixas) {
+			/// DefaultScheduleEvent<?> evento = new DefaultScheduleEvent<>();
+			LocalDateTime localDateTime = FormatarData.converterDateParaLocalDate(movimentacaoCaixa.getData().toInstant());
+			// Instant instant = movimentacaoCaixa.getData().toInstant();
+			// LocalDateTime localDateTime = LocalDateTime.ofInstant(instant,
+			// ZoneId.systemDefault());
+			// evento.setStartDate(localDateTime);
+			// evento.setId(movimentacaoCaixa.getId().toString());
+			// evento.setDescription(movimentacaoCaixa.getObservacao());
+			// evento.setTitle("Caixa está Fechado");
+			// evento.setAllDay(true);
+			// evento.setEditable(true);
+			caixas.addEvent(
+					evento(localDateTime, movimentacaoCaixa.getId().toString(), movimentacaoCaixa.getObservacao()));
+		}
+		return caixas;
+
 	}
 
+	public DefaultScheduleEvent<?> evento(LocalDateTime localDateTime, String id, String observacao) {
+		DefaultScheduleEvent<?> evento = new DefaultScheduleEvent<>();
+		evento.setStartDate(localDateTime);
+		evento.setId(id);
+		evento.setDescription(observacao);
+		evento.setTitle("Caixa está Fechado");
+		evento.setAllDay(true);
+		evento.setEditable(true);
+		return evento;
+	}
 }

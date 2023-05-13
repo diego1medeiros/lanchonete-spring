@@ -41,10 +41,10 @@
 						style="color: red;font-weight: bold; font-size: 20px;background-color:#363636;opacity:0.9;">
 
 						<p:ajax event="dateSelect" oncomplete="PF('dialogo').show();"
-							listener="#{caixaBean.novo}" update=":mesagens :form:painel" />
+							listener="#{caixaBean.criarNovoCaixa}" update=":mesagens :form:painel" />
 
 						<p:ajax event="eventSelect" oncomplete="PF('dialogo').show();"
-							listener="#{caixaBean.selecionado}"
+							listener="#{caixaBean.selecionadoCaixa}"
 							update=":mesagens :form:painel" />
 					</p:schedule>
 

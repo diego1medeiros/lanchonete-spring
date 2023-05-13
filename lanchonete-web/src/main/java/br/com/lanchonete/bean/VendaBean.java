@@ -39,7 +39,7 @@ public class VendaBean implements Serializable {
 
 	private List<ItemVendaDto> listaPedidos;
 
-	private VendaDto[] listaDaVenda;
+	private List<VendaDto> listaDaVenda;
 
 	private List<ItemVendaDto> itensVenda;
 
@@ -53,10 +53,8 @@ public class VendaBean implements Serializable {
 		venda.setValorTotal(0);
 		venda.setQtdeTotal(0);
 		itensVenda = new ArrayList<>();
+		listaDaVenda = listaVenda();
 
-		Gson gson = new Gson();
-		String json = vendaService.listaVendas();
-		listaDaVenda = gson.fromJson(json, VendaDto[].class);
 	}
 
 	// adicioanr itens da venda no carrinho
@@ -145,7 +143,7 @@ public class VendaBean implements Serializable {
 	// excluir pedido do cliente
 	public void excluirPedidoDoCliente(VendaDto venda) {
 		vendaService.excluirVendaNoSpring(venda.getId());
-		Message.info("O pedido numero foi excluido com sucesso!!!", "");
+		Message.info("O pedido numero " + venda.getId() + " foi excluido com sucesso!!!", "");
 		listaDadosDosItensDoCarrinho();
 
 	}
@@ -153,17 +151,27 @@ public class VendaBean implements Serializable {
 //	// imrimir os pedidos dos clientes
 	public void getImprimirPedidos(VendaDto venda) {
 		Relatorio<ItemVendaDto> report = new Relatorio<ItemVendaDto>();
-		String json = vendaService.imprimirPedido(venda.getId());
-		Gson gson = new Gson();
-		ItemVendaDto[] lista = gson.fromJson(json, ItemVendaDto[].class);
-		listaPedidos = Arrays.asList(lista);
-		//String s = "C:/Users/diego/git/lanchonete-spring/lanchonete-web/src/main/webapp/WEB-INF/relatorio/Cherry_2.jrxml";
-
-	//	ImprimirPedidos.imprimirPedido(s, listaPedidos);
+		listaPedidos = listaPedidos(venda.getId());
 		if (listaPedidos.size() > 0) {
 			report.getRelatorio(listaPedidos);
 		} else {
 		}
+	}
+
+	public List<ItemVendaDto> listaPedidos(Long id) {
+		String json = vendaService.imprimirPedido(id);
+		Gson gson = new Gson();
+		ItemVendaDto[] lista = gson.fromJson(json, ItemVendaDto[].class);
+		List<ItemVendaDto> listaPedidos = Arrays.asList(lista);
+		return listaPedidos;
+	}
+
+	public List<VendaDto> listaVenda() {
+		Gson gson = new Gson();
+		String json = vendaService.listaVendas();
+		VendaDto[] listaDaVenda = gson.fromJson(json, VendaDto[].class);
+		List<VendaDto> listaVenda = Arrays.asList(listaDaVenda);
+		return listaVenda;
 	}
 
 }
