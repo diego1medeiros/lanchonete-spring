@@ -22,19 +22,19 @@ import br.com.lanchonete.entity.Cliente;
 import br.com.lanchonete.repository.ClienteRepository;
 
 @RestController
-@RequestMapping("/lanchonete")
+@RequestMapping("/cliente/lanchonete")
 public class ClienteController {
 
 	@Autowired
 	private ClienteRepository repository;
 
-	@GetMapping("/listarcliente")
+	@GetMapping
 	public ResponseEntity<?> listarClientes() {
 		var listarClientes = repository.findAll().stream().map(DadosListagemCliente::new).toList();
 		return ResponseEntity.ok(listarClientes);
 	}
 
-	@PostMapping("/cadastrarcliente")
+	@PostMapping
 	public ResponseEntity<DadosListagemCliente> cadastrarCliente(@RequestBody DadosCadastroCliente dadosCliente,
 			UriComponentsBuilder uriComponentsBuilder) {
 		Cliente cliente = new Cliente(dadosCliente);
@@ -43,14 +43,14 @@ public class ClienteController {
 		return ResponseEntity.created(uri).body(new DadosListagemCliente(cliente));
 	}
 
-	@DeleteMapping("/excluircliente/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> excluir(@PathVariable Long id) {
 		repository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 
 	@Transactional
-	@PutMapping("/atualizarcliente")
+	@PutMapping
 	public ResponseEntity<?> atualizar(@RequestBody DadosAtualizarCliente dadosCliente) {
 		var cliente = repository.getReferenceById(dadosCliente.id());
 		cliente.atualizarCliente(dadosCliente);

@@ -15,14 +15,14 @@ public class FuncionarioService {
 
 	public String listarFuncionario() {
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(BASE_URI).path("/lanchonete/listarfuncionario");
+		WebTarget target = client.target(BASE_URI).path("/funcionario/lanchonete");
 		String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
 		return response;
 	}
 
 	public String cadastrarFuncionarioNoSpring(FuncionarioDto dto) {
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(BASE_URI).path("/lanchonete/cadastrarfuncionario");
+		WebTarget target = client.target(BASE_URI).path("/funcionario/lanchonete");
 		String response = target.request(MediaType.APPLICATION_JSON)
 				.post(Entity.entity(dto, MediaType.APPLICATION_JSON), String.class);
 		return response;
@@ -31,14 +31,14 @@ public class FuncionarioService {
 	public String excluirFuncionarioNoSpring(Long id) {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(BASE_URI)
-				.path("/lanchonete/excluirfuncionario/{id}").resolveTemplate("id", id);
+				.path("/funcionario/lanchonete/{id}").resolveTemplate("id", id);
 		String response = target.request(MediaType.APPLICATION_JSON).delete(String.class);
 		return response;
 	}
 
 	public String atualizarrFuncionarioNoSpring(FuncionarioDto dto) {
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(BASE_URI).path("/lanchonete/atualizarfuncionario");
+		WebTarget target = client.target(BASE_URI).path("/funcionario/lanchonete");
 		String response = target.request(MediaType.APPLICATION_JSON)
 				.put(Entity.entity(dto, MediaType.APPLICATION_JSON), String.class);
 		return response;

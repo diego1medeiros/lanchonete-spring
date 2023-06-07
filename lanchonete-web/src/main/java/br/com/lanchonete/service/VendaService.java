@@ -1,6 +1,5 @@
 package br.com.lanchonete.service;
 
-import java.util.Date;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -8,7 +7,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-import br.com.lanchonete.dto.MovimentacaoCaixaDto;
 import br.com.lanchonete.dto.VendaDto;
 
 public class VendaService {
@@ -17,7 +15,7 @@ public class VendaService {
 
 	public String listaVendas() {
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(BASE_URI).path("/lanchonete/listarvenda");
+		WebTarget target = client.target(BASE_URI).path("/venda/lanchonete");
 		String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
 		System.out.println(response);
 		return response;
@@ -25,7 +23,7 @@ public class VendaService {
 
 	public String cadastrarVendaNoSpring(VendaDto dto) {
 		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target(BASE_URI).path("/lanchonete/cadastrarvenda");
+		WebTarget target = client.target(BASE_URI).path("/venda/lanchonete");
 		String response = target.request(MediaType.APPLICATION_JSON)
 				.post(Entity.entity(dto, MediaType.APPLICATION_JSON), String.class);
 		return response;
@@ -34,7 +32,7 @@ public class VendaService {
 	public String excluirVendaNoSpring(Long id) {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(BASE_URI)
-				.path("/lanchonete/excluirvenda/{id}").resolveTemplate("id", id);
+				.path("/venda/lanchonete/{id}").resolveTemplate("id", id);
 		String response = target.request(MediaType.APPLICATION_JSON).delete(String.class);
 		return response;
 	}
@@ -42,7 +40,7 @@ public class VendaService {
 	public String imprimirPedido(Long id) {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target(BASE_URI)
-				.path("/lanchonete/imprimirpedido/{id}").resolveTemplate("id", id);
+				.path("/venda/lanchonete/{id}").resolveTemplate("id", id);
 		String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
 		return response;
 	}

@@ -23,7 +23,7 @@ import br.com.lanchonete.repository.VendaRepository;
 import br.com.lanchonete.service.VendaService;
 
 @RestController
-@RequestMapping("/lanchonete")
+@RequestMapping("/venda/lanchonete")
 public class VendaController {
 
 	@Autowired
@@ -35,7 +35,7 @@ public class VendaController {
 	@Autowired
 	private VendaService vendaService;
 
-	@PostMapping("/cadastrarvenda")
+	@PostMapping
 	public ResponseEntity<?> cadastrarFornecedor(@RequestBody DadosCadastroVenda dadosVenda,
 			UriComponentsBuilder uriComponentsBuilder) {
 		vendaService.cadastrarVenda(dadosVenda);
@@ -44,19 +44,19 @@ public class VendaController {
 		return ResponseEntity.created(uri).body(new DadosListagemVenda(venda));
 	}
 
-	@GetMapping("/listarvenda")
+	@GetMapping
 	public ResponseEntity<?> listarVendas() {
 		var listarVendas = vendaRepository.findAll().stream().map(DadosListagemVenda::new).toList();
 		return ResponseEntity.ok(listarVendas);
 	}
 
-	@DeleteMapping("/excluirvenda/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> excluir(@PathVariable Long id) {
 		vendaService.removerVenda(id);
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/imprimirpedido/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<?> imprimirPedido(@PathVariable Long id) {
 		List<ItemVenda> ItensVenda = itemVendarepository.findByVendaId(id);
 		return ResponseEntity.ok(ItensVenda);

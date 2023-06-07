@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.model.SelectItem;
-import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.event.SelectEvent;
@@ -33,7 +33,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Named(value = "caixaBean")
-@ViewScoped
+@RequestScoped
 public class CaixaBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;

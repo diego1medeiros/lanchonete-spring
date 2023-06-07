@@ -23,7 +23,7 @@ import br.com.lanchonete.repository.CaixaRepository;
 import br.com.lanchonete.repository.VendaRepository;
 
 @RestController
-@RequestMapping("/lanchonete")
+@RequestMapping("/caixa/lanchonete")
 public class CaixaController {
 
 	@Autowired
@@ -32,13 +32,13 @@ public class CaixaController {
 	@Autowired
 	private VendaRepository vendaRepository;
 
-	@GetMapping("/listarcaixa")
+	@GetMapping
 	public ResponseEntity<?> listarMovimentacaoCaixa() {
 		var listarMovimentacaoCaixa = caixaRepository.findAll().stream().map(DadosListagemMovimentacao::new).toList();
 		return ResponseEntity.ok(listarMovimentacaoCaixa);
 	}
 
-	@PostMapping("/salvarmovimentacaocaixa")
+	@PostMapping
 	public ResponseEntity<?> cadastrarCliente(@RequestBody DadosMovimentacaoCaixa dadosMovimentacaoCaixa,
 			UriComponentsBuilder uriComponentsBuilder) {
 		Caixa caixa = new Caixa(dadosMovimentacaoCaixa);
@@ -47,13 +47,13 @@ public class CaixaController {
 		return ResponseEntity.created(uri).body(new DadosListagemMovimentacao(caixa));
 	}
 
-	@DeleteMapping("/excluiregistro/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> excluir(@PathVariable Long id) {
 		caixaRepository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/valortotal/{localDateTime}")
+	@GetMapping("/{localDateTime}")
 	public Double valorTotalDoCaixa(@PathVariable LocalDateTime localDateTime) {
 		Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 		Double valorTotal = vendaRepository.sumValorTotalByData(date);

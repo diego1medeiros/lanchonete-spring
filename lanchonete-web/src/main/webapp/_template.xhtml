@@ -44,7 +44,6 @@ html {
 			<p:sidebar widgetVar="sidebar3" position="top"
 				style="opacity:0.9;background-color:#FF0000!important;font-size: 18px;">
 				<p:graphicImage library="imagens" name="logo1.png" width="250" />
-
 				<p:growl id="messages" />
 				<p:menubar
 					style=" font-weight: bold;	background-color:#363636!important;">
@@ -78,15 +77,19 @@ html {
 							style=" font-size: 28px; font-weight: bold;	background-color:#363636!important;"
 							url="http://localhost:8080/lanchonete-web/venda.xhtml" />
 					</p:submenu>
-					
+
 					<p:submenu label="Caixa" icon="pi pi-money-bill"
 						style="font-size: 28px; font-weight: bold;	background-color:#363636!important;">
 						<p:menuitem value="Fluxo de Caixa" icon="pi pi-money-bill"
 							style=" font-size: 28px; font-weight: bold;	background-color:#363636!important;"
 							url="http://localhost:8080/lanchonete-web/caixa.xhtml" />
 					</p:submenu>
-					
+
 					<f:facet name="options">
+					<p:outputLabel value="#{funcionariobean.usuarioLogado.nome}"
+						icon="pi pi-fw pi-sign-out"
+						style=" font-size: 28px; margin: 0 15px;"
+						styleClass="ui-button-danger" />
 						<p:commandLink value="SAIR" icon="pi pi-fw pi-sign-out"
 							style=" font-size: 28px;background-color:#000000!important"
 							action="#{funcionariobean.deslogar}"
@@ -94,6 +97,8 @@ html {
 					</f:facet>
 				</p:menubar>
 			</p:sidebar>
+			</h:form>
+			<h:form>
 			<center>
 				<br /> <br /> <br />
 				<p:commandButton value="Menu"

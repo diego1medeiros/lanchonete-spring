@@ -37,8 +37,9 @@ public class FuncionarioBean implements Serializable {
 	@Inject
 	private FuncionarioService funcionarioService;
 
+	
 	private FuncionarioDto[] listaFuncionarios;
-
+	
 	// cadastar e atualizar Funcionarios do banco de dados
 	public String cadastrarFuncionario() {
 		try {
@@ -91,6 +92,13 @@ public class FuncionarioBean implements Serializable {
 		}
 		Message.erro("Login e Senha errada!!!", "");
 		return null;
+	}
+	
+	public FuncionarioDto getUsuarioLogado() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		FuncionarioDto funcionarioLogado = (FuncionarioDto) context.getExternalContext().getSessionMap()
+				.get("funcionarioLogado");
+		return funcionarioLogado;
 	}
 
 	// deslogar do sistema

@@ -21,33 +21,33 @@ import br.com.lanchonete.entity.Fornecedor;
 import br.com.lanchonete.repository.FornecedorRepository;
 
 @RestController
-@RequestMapping("/lanchonete")
+@RequestMapping("/fornecedor/lanchonete")
 public class FornecedorController {
 
 	@Autowired
 	private FornecedorRepository repository;
 	
-	@GetMapping("/listarfornecedor")
+	@GetMapping
 	public ResponseEntity<?> listarFornecedores() {
 		var listarFornecedores = repository.findAll().stream().map(DadosListagemFornecedor::new).toList();
 		return ResponseEntity.ok(listarFornecedores);
 	}
 	
-	@DeleteMapping("/excluirfornecedor/{id}")
+	@DeleteMapping("{id}")
 	public ResponseEntity<?> excluirFornecedor(@PathVariable Long id) {
 		repository.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@Transactional
-	@PutMapping("/atualizarfornecedor")
+	@PutMapping
 	public ResponseEntity<?> atualizarFornecedor(@RequestBody DadosCadastroFornecedor dadosFornecedor) {
 		var fornecedor = repository.getReferenceById(dadosFornecedor.id());
 		fornecedor.atualizarFornecedor(dadosFornecedor);
 		return ResponseEntity.ok(new DadosListagemFornecedor(fornecedor));
 	}
 
-	@PostMapping("/cadastrarfornecedor")
+	@PostMapping
 	public ResponseEntity<?> cadastrarFornecedor(@RequestBody DadosCadastroFornecedor dadosFornecedor,
 			UriComponentsBuilder uriComponentsBuilder) {
 		Fornecedor fornecedor = new Fornecedor(dadosFornecedor);

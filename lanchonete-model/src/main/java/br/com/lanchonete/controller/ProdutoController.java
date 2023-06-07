@@ -21,19 +21,19 @@ import br.com.lanchonete.entity.Produto;
 import br.com.lanchonete.repository.ProdutoRepository;
 
 @RestController
-@RequestMapping("/lanchonete")
+@RequestMapping("/produto/lanchonete")
 public class ProdutoController {
 	
 	@Autowired
 	private ProdutoRepository repository;
 
-	@GetMapping("/listarproduto")
+	@GetMapping
 	public ResponseEntity<?> listarProdutos() {
 		var listarProdutos = repository.findAll().stream().map(DadosListagemProdutos::new).toList();
 		return ResponseEntity.ok(listarProdutos);
 	}
 	
-	@PostMapping("/cadastrarproduto")
+	@PostMapping
 	public ResponseEntity<?> cadastrarProduto(@RequestBody DadosCadastroProduto dadosProduto,
 			UriComponentsBuilder uriComponentsBuilder) {
 		Produto produto = new Produto(dadosProduto);
@@ -43,14 +43,14 @@ public class ProdutoController {
 	}
 	
 	@Transactional
-	@PutMapping("/atualizarproduto")
+	@PutMapping
 	public ResponseEntity<?> atualizarProduto(@RequestBody  DadosCadastroProduto dadosProduto){
 		var produto = repository.getReferenceById(dadosProduto.id());
 		produto.atualizarProduto(dadosProduto);
 		return ResponseEntity.ok(new DadosListagemProdutos(produto));
 	}
 	
-	@DeleteMapping("/excluirproduto/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> excluirProduto(@PathVariable Long id) {
 		repository.deleteById(id);
 		return ResponseEntity.noContent().build();

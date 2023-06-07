@@ -18,9 +18,8 @@
 				<center>
 					<p:graphicImage library="imagens" name="logo1.png" width="380" />
 					<h1 style="font-weight: bold;">Login</h1>
-
 					<h:form id="login">
-						<p:growl showDetail="true" />
+						<p:growl showDetail="true" id="mesagens" />
 						<p:toolbar style="opacity:0.9">
 							<p:toolbarGroup>
 								<p:panelGrid columns="1">
@@ -46,7 +45,10 @@
 							style=" font-weight: bold;"
 							styleClass="rounded-button ui-button-danger" icon="pi pi-sign-in" />
 						<br /> <br /> <br />
+							<h2>Não tenho cadastro ?</h2>
 					</h:form>
+					<p:commandLink value="Cadastrar Funcionario"
+			oncomplete="PF('cadastroNovoFuncionario').show()" />
 				</center>
 			</p:sidebar>
 			<center>
@@ -59,6 +61,157 @@
 			<center>
 				<br /> <br /> <br /> <br /> <br />
 			</center>
+			
+			<h:form id="tabela">	
+				
+				<p:dialog header="#{bundle['cadastro.funcionario']}"
+					showEffect="fade" style="opacity:0.9;" maximizable="true"
+					minimizable="true" modal="true" widgetVar="cadastroNovoFuncionario"
+					responsive="true">
+					<p:toolbar>
+						<p:toolbarGroup>
+							<p:outputPanel class="ui-fluid" id="tabela1">
+								<p:growl showDetail="true" id="msn"/>
+								<h:panelGrid id="pnResultado" columns="4" cellspacing="6"
+									cellpadding="6">
+									<p:outputLabel value="#{bundle['funcionario.funcao']}" for="funcao"
+										style="font-weight:bold; padding-right: 5px; float: right;"/>
+									<p:selectOneMenu requiredMessage="O nome e Obrigatorio!!" id="funcao"
+									required="true" 
+										value="#{funcionariobean.funcionario.funcao}"
+										style="font-weight: bold; ">
+										<f:selectItem itemLabel="Selecione a Função " 
+											noSelectionOption="true" />
+										<f:selectItems value="#{funcionariobean.funcaoFuncionario}"  />
+									</p:selectOneMenu>
+									
+									<p:outputLabel value="#{bundle['funcionario.nome']}" for="nome"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText value="#{funcionariobean.funcionario.nome}"
+										id="nome" required="true" style="font-weight: bold;"
+										requiredMessage="O nome e Obrigatorio!!"
+										placeholder="digite o Nome" size="45" />
+
+									<p:outputLabel value="#{bundle['funcionario.cpf']}" for="cpf"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputMask value="#{funcionariobean.funcionario.cpf}"
+										id="cpf" required="true" mask="999.999.999-99"
+										style=" font-weight: bold;" validateMask="true"
+										requiredMessage="O cpf e obrigatório !!"
+										placeholder="digite o cpf" size="15" />
+
+									<p:outputLabel value="#{bundle['funcionario.email']}"
+										for="email"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText value="#{funcionariobean.funcionario.email}"
+										id="email" validateMask="true" style=" font-weight: bold;"
+										requiredMessage="O email e obrigatório !!"
+										placeholder="digite o email" size="45" />
+
+									<p:outputLabel value="#{bundle['funcionario.telefone']}"
+										for="telefone"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputMask value="#{funcionariobean.funcionario.telefone}"
+										id="telefone" required="true" mask="(99) 99999-9999"
+										style=" font-weight: bold;" validateMask="true"
+										requiredMessage="O telefone e obrigatório !!"
+										placeholder="digite o telefone" size="15" />
+
+									<p:outputLabel for="salario" value="Salario"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputNumber id="salario"
+										value="#{funcionariobean.funcionario.salario}"
+										style="font-weight: bold;" roundMethod="S" decimalPlaces="2"
+										symbol="R$" size="15" decimalSeparator=","
+										thousandSeparator="." readonly="false"
+										placeholder="digite o Salario" />
+
+									<p:outputLabel value="#{bundle['funcionario.login']}"
+										for="login"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText id="login" required="true"
+										style=" font-weight: bold;"
+										requiredMessage="O Login e obrigatório !!"
+										placeholder="digite o Login"
+										value="#{funcionariobean.funcionario.login}" size="15" />
+
+									<p:outputLabel value="#{bundle['funcionario.senha']}"
+										for="senha"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText id="senha" style=" font-weight: bold;"
+										required="true" requiredMessage="A senha e obrigatório !!"
+										placeholder="digite a Senha"
+										value="#{funcionariobean.funcionario.senha}" size="15" />
+
+									<p:outputLabel value="#{bundle['endereco.cep']}" for="cep"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputMask mask="99999-999" id="cep" style="font-weight:bold"
+										value="#{funcionariobean.funcionario.endereco.cep}" size="15"
+									
+										placeholder="digite o cep">
+										<p:commandButton icon="pi pi-search"
+										update=":tabela:tabela1" 
+											action="#{funcionariobean.encontraCEP}" />
+									</p:inputMask>
+
+									<p:outputLabel value="#{bundle['endereco.estado']}"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText size="15" style="font-weight:bold"
+										placeholder="digite o estado"
+										value="#{funcionariobean.funcionario.endereco.estado}" />
+
+									<p:outputLabel value="#{bundle['endereco.cidade']}"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText style="font-weight:bold"
+										value="#{funcionariobean.funcionario.endereco.cidade}"
+										placeholder="digite a cidade" size="15" />
+
+									<p:outputLabel value="#{bundle['endereco.bairro']}"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText size="45" style="font-weight:bold"
+										value="#{funcionariobean.funcionario.endereco.bairro}"
+										placeholder="digite o bairro" />
+
+									<p:outputLabel value="#{bundle['endereco.rua']}" for="rua"
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText size="45" id="rua" style="font-weight:bold"
+										value="#{funcionariobean.funcionario.endereco.rua}"
+										placeholder="digite a rua" />
+
+									<p:outputLabel value="#{bundle['endereco.numero']}"
+										for="numero"
+										style=" font-weight: bold; padding-right: 5px; float: right;" />
+									<p:inputText
+										value="#{funcionariobean.funcionario.endereco.numero}"
+										id="numero" placeholder="digite o numero"
+										style=" font-weight: bold;" size="15" />
+
+									<p:outputLabel
+										style="font-weight:bold; padding-right: 5px; float: right;" />
+									<p:inputText type="hidden"
+										value="#{funcionariobean.funcionario.id}" />
+										
+								</h:panelGrid>
+							</p:outputPanel>
+						</p:toolbarGroup>
+					</p:toolbar>
+					<f:facet name="footer">
+						<p:commandButton value="#{bundle.salvar}" id="salvar"
+							styleClass="ui-button-info" 
+							update=":tabela:tabela1" 
+							action="#{funcionariobean.cadastrarFuncionario()}"
+							icon="pi pi-save" 
+							style="margin-tpo:10pix" />
+						<p:tooltip for="salvar" value="Salvar Funcionario"
+							showEffect="clip" hideEffect="fold" />
+						<font></font>
+						<font></font>
+						<p:commandButton value="Cancel" icon="pi pi-times"
+							onclick="PF('cadastroNovoFuncionario').hide()"
+							class="ui-button-secondary" type="button" />
+					</f:facet>
+				</p:dialog>
+				</h:form>
 		</ui:define>
 	</ui:composition>
 </h:body>

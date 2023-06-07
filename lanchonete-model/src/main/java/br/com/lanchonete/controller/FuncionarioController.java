@@ -21,19 +21,19 @@ import br.com.lanchonete.entity.Funcionario;
 import br.com.lanchonete.repository.FuncionarioRepository;
 
 @RestController
-@RequestMapping("/lanchonete")
+@RequestMapping("/funcionario/lanchonete")
 public class FuncionarioController {
 
 	@Autowired
 	private FuncionarioRepository repository;
 	
-	@GetMapping("/listarfuncionario")
+	@GetMapping
 	public ResponseEntity<?> listarFuncionarios() {
 		var listarFuncionarios = repository.findAll().stream().map(DadosListagemFuncionario::new).toList();
 		return ResponseEntity.ok(listarFuncionarios);
 	}
 	
-	@PostMapping("/cadastrarfuncionario")
+	@PostMapping
 	public ResponseEntity<?> cadastrarFuncionario(@RequestBody DadosCadastroFuncionario dadosFuncionario,
 			UriComponentsBuilder uriComponentsBuilder) {
 		Funcionario funcionario = new Funcionario(dadosFuncionario);
@@ -43,14 +43,14 @@ public class FuncionarioController {
 	}
 	
 	@Transactional
-	@PutMapping("/atualizarfuncionario")
+	@PutMapping
 	public ResponseEntity<?> atualizarFuncionario(@RequestBody DadosCadastroFuncionario dadosFuncionario) {
 		var funcionario = repository.getReferenceById(dadosFuncionario.id());
 		funcionario.atualizarFuncionario(dadosFuncionario);
 		return ResponseEntity.ok(new DadosListagemFuncionario(funcionario));
 	}
 	
-	@DeleteMapping("/excluirfuncionario/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> excluirFuncionario(@PathVariable Long id) {
 		repository.deleteById(id);
 		return ResponseEntity.noContent().build();
