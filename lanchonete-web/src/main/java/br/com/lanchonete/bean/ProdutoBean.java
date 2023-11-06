@@ -8,12 +8,16 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
+
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.file.UploadedFile;
 
@@ -45,7 +49,7 @@ public class ProdutoBean implements Serializable {
 
 	@Inject
 	private ProdutoService produtoService;
-	
+
 	@Inject
 	private FornecedorService fornecedorService;
 
@@ -54,8 +58,13 @@ public class ProdutoBean implements Serializable {
 
 		try {
 			if (produto.getId() == null) {
-				UploadImagem.uploadImagem(file);
-				produto.setCaminhoImagem("C:/Uploads/" + file.getFileName());
+			    Path destino =	 UploadImagem.uploadImagem(file);		
+			//	FacesContext context = FacesContext.getCurrentInstance();
+			//	ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();  
+			//	String diretorioRecursos = servletContext.getRealPath("/resources/imagens/");
+			//	String nomeArquivo = file.getFileName();
+				produto.setCaminhoImagem(destino.toString());
+				produto.setFornecedorId(produto.getFornecedor().getId());
 				produtoService.cadastrarProdutoNoSpring(produto);
 				Message.info("Cadastro", "Produto cadastrado com sucesso!!");
 
@@ -63,9 +72,9 @@ public class ProdutoBean implements Serializable {
 				Message.warr("A imagem e obrigatoria!!", "");
 
 			} else {
-				Path origem = Paths.get(produto.getCaminhoImagem());
-				Path destino = Paths.get("C:/Uploads/" + file.getFileName());
-				Files.copy(origem, destino, StandardCopyOption.REPLACE_EXISTING);
+			    Path destino =	 UploadImagem.uploadImagem(file);
+				produto.setCaminhoImagem(destino.toString());
+				produto.setFornecedorId(produto.getFornecedor().getId());
 				produtoService.atualizarProdutoNoSpring(produto);
 				Message.info("Atualização", "Produto atualizado com sucesso!!");
 			}
@@ -93,8 +102,8 @@ public class ProdutoBean implements Serializable {
 	// excluir produtos do banco de dados
 	public void excluirProduto(ProdutoDto produto) {
 		try {
-			Path arquivo = Paths.get(produto.getCaminhoImagem());
-			Files.deleteIfExists(arquivo);
+		//	Path arquivo = Paths.get(produto.getCaminhoImagem());
+		//	Files.deleteIfExists(arquivo);
 			produtoService.excluirProdutoNoSpring(produto.getId());
 			listaDadosDosProdutos();
 			limpar();
@@ -107,7 +116,7 @@ public class ProdutoBean implements Serializable {
 
 	public List<SelectItem> getLista() {
 		List<SelectItem> lista = new ArrayList<>();
-	        String json = fornecedorService.listaFornecedor();
+		String json = fornecedorService.listaFornecedor();
 		Gson gson = new Gson();
 		FornecedorDto[] listaFornecedores = gson.fromJson(json, FornecedorDto[].class);
 		for (FornecedorDto fornecedor : listaFornecedores) {

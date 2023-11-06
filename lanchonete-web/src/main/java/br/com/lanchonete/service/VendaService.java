@@ -6,12 +6,11 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-
 import br.com.lanchonete.dto.VendaDto;
 
 public class VendaService {
 
-	private static final String BASE_URI = "http://localhost:8082";
+	private static final String BASE_URI = "http://gateway:8082";
 
 	public String listaVendas() {
 		Client client = ClientBuilder.newClient();
@@ -44,8 +43,4 @@ public class VendaService {
 		String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
 		return response;
 	}
-
-	
-	
-	
 }

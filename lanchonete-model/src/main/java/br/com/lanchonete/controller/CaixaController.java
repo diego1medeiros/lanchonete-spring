@@ -23,7 +23,7 @@ import br.com.lanchonete.repository.CaixaRepository;
 import br.com.lanchonete.repository.VendaRepository;
 
 @RestController
-@RequestMapping("/caixa/lanchonete")
+@RequestMapping("/venda/lanchonete/caixa")
 public class CaixaController {
 
 	@Autowired
@@ -39,7 +39,7 @@ public class CaixaController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> cadastrarCliente(@RequestBody DadosMovimentacaoCaixa dadosMovimentacaoCaixa,
+	public ResponseEntity<?> FecharMovimentacaoCaixa(@RequestBody DadosMovimentacaoCaixa dadosMovimentacaoCaixa,
 			UriComponentsBuilder uriComponentsBuilder) {
 		Caixa caixa = new Caixa(dadosMovimentacaoCaixa);
 		caixaRepository.save(caixa);

@@ -23,6 +23,7 @@ public class VendaDto implements Serializable  {
 	private double valorTotal;
 	private String observacao;
 	private int qtdeTotal;
+	private Long clienteId;	
 	private List<ItemVendaDto> itensVenda;
 	private ClienteDto cliente = new ClienteDto();
 	private TipoPagamentoDto tipoPagamento = new TipoPagamentoDto();

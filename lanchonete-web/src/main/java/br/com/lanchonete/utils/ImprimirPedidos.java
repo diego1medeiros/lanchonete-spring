@@ -1,47 +1,52 @@
 package br.com.lanchonete.utils;
 
-import java.awt.GraphicsEnvironment;
-import java.awt.print.PrinterJob;
+import java.io.InputStream;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.swing.JDialog;
-import javax.swing.text.View;
-
-import org.primefaces.PrimeFaces;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.swing.JRViewer;
-import net.sf.jasperreports.view.JasperViewer;
 
 public class ImprimirPedidos {
 
-	public static void imprimirPedido(String pathJasper, List<?> listaRelatorio) {
+	public static void imprimirPedido(List<?> listaRelatorio) {
 
 		try {
-			JasperReport relatorio = JasperCompileManager.compileReport(pathJasper);
-			JasperPrint relatorioPreenchido;
-			relatorioPreenchido = JasperFillManager.fillReport(relatorio, null,
-					new JRBeanCollectionDataSource(listaRelatorio));
-		
-			
 
-			 JasperViewer.viewReport(relatorioPreenchido, false);
-			// JasperPrintManager.printReport(relatorioPreenchido, false);
+			ServletContext context1 = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
+			InputStream jasperStream = context1.getResourceAsStream("/relatorio/relatorio-vendas.jrxml");
+
+			JasperReport relatorio = JasperCompileManager.compileReport(jasperStream);
+			JasperPrint relatorioPreenchido = JasperFillManager.fillReport(relatorio, null,
+					new JRBeanCollectionDataSource(listaRelatorio));
+
 			
-//			JDialog tela = new JDialog();
-//			tela.setSize(1000, 600);
-//			JRViewer painel = new JRViewer(relatorioPreenchido);
-//			tela.getContentPane().add(painel);
-//			tela.setVisible(true);
-	       	} catch (JRException e) {
+			
+			JDialog tela = new JDialog();
+			tela.setSize(1000, 600);
+			JRViewer painel = new JRViewer(relatorioPreenchido);
+			tela.getContentPane().add(painel);
+			tela.setVisible(true);
+		} catch (JRException e) {
+
+			System.out.println("não");
+
 			e.printStackTrace();
 //		}
-	}
 		}
+	}
+
+//	
 }

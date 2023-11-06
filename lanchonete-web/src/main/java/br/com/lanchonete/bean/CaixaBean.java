@@ -24,7 +24,6 @@ import br.com.lanchonete.dto.FuncionarioDto;
 import br.com.lanchonete.dto.MovimentacaoCaixaDto;
 import br.com.lanchonete.service.CaixaService;
 import br.com.lanchonete.service.FuncionarioService;
-import br.com.lanchonete.service.VendaService;
 import br.com.lanchonete.utils.FormatarData;
 import br.com.lanchonete.utils.Message;
 import lombok.Getter;
@@ -48,7 +47,7 @@ public class CaixaBean implements Serializable {
 
 	private CaixaService caixaService = new CaixaService();
 
-	private VendaService vendaService = new VendaService();
+	// private VendaService vendaService = new VendaService();
 
 	@PostConstruct
 	public void listar() {
@@ -72,12 +71,12 @@ public class CaixaBean implements Serializable {
 		if (valorTotal == null) {
 			movimentacaoCaixa = new MovimentacaoCaixaDto();
 			movimentacaoCaixa.setData(FormatarData.converterLocalDateParaDate(localDateTime));
-			Message.warr("Não foi aberto nenhum caixa nesse dia!!!", "");
+			Message.warr("  Nenhum caixa aberto nesse dia!!!", "");
 		} else {
 			movimentacaoCaixa = new MovimentacaoCaixaDto();
 			movimentacaoCaixa.setData(FormatarData.converterLocalDateParaDate(localDateTime));
 			movimentacaoCaixa.setValorTotal(valorTotal);
-			Message.warr("Caixa está aberto!!!", "");
+			Message.warr("Caixa estar aberto!!!", "");
 		}
 	}
 
@@ -87,7 +86,7 @@ public class CaixaBean implements Serializable {
 			Long id = Long.valueOf(evento.getId());
 			if (caixa.getId().equals(id) || caixa.getValorCaixa() != 0) {
 				movimentacaoCaixa = caixa;
-				Message.warr("Caixa está Fechado!!!", "");
+				Message.warr(" ", " Caixa Fechado!!!");
 				break;
 			}
 		}
@@ -103,12 +102,13 @@ public class CaixaBean implements Serializable {
 				Message.warr("O Valor do caixa e obrigatorio!!", "");
 				return;
 			}
+			movimentacaoCaixa.setFuncionarioId(movimentacaoCaixa.getFuncionario().getId());
 			caixaService.salvarMovimentacaoDoCaixa(movimentacaoCaixa);
 			Message.info("O registro do caixa salvo com sucesso!!!", "");
 			listar();
 
 		} else {
-			Message.warr("Caixa estar Fechado!!!", "");
+			Message.warr("Caixa Fechado!!!", "");
 		}
 	}
 
@@ -133,21 +133,13 @@ public class CaixaBean implements Serializable {
 	public String getformatarData(Date data) {
 		return FormatarData.formatarData(data);
 	}
+
 	public ScheduleModel listarDadosDoCaixaFechedo() {
 		ScheduleModel caixas = new DefaultScheduleModel();
 		List<MovimentacaoCaixaDto> movimentacaoCaixas = listarMovimentacaoCaixa();
 		for (MovimentacaoCaixaDto movimentacaoCaixa : movimentacaoCaixas) {
-			/// DefaultScheduleEvent<?> evento = new DefaultScheduleEvent<>();
-			LocalDateTime localDateTime = FormatarData.converterDateParaLocalDate(movimentacaoCaixa.getData().toInstant());
-			// Instant instant = movimentacaoCaixa.getData().toInstant();
-			// LocalDateTime localDateTime = LocalDateTime.ofInstant(instant,
-			// ZoneId.systemDefault());
-			// evento.setStartDate(localDateTime);
-			// evento.setId(movimentacaoCaixa.getId().toString());
-			// evento.setDescription(movimentacaoCaixa.getObservacao());
-			// evento.setTitle("Caixa está Fechado");
-			// evento.setAllDay(true);
-			// evento.setEditable(true);
+			LocalDateTime localDateTime = FormatarData
+					.converterDateParaLocalDate(movimentacaoCaixa.getData().toInstant());
 			caixas.addEvent(
 					evento(localDateTime, movimentacaoCaixa.getId().toString(), movimentacaoCaixa.getObservacao()));
 		}
@@ -160,7 +152,7 @@ public class CaixaBean implements Serializable {
 		evento.setStartDate(localDateTime);
 		evento.setId(id);
 		evento.setDescription(observacao);
-		evento.setTitle("Caixa está Fechado");
+		evento.setTitle("Caixa Fechado");
 		evento.setAllDay(true);
 		evento.setEditable(true);
 		return evento;

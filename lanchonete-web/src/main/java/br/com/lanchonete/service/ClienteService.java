@@ -10,7 +10,7 @@ import br.com.lanchonete.dto.ClienteDto;
 
 public class ClienteService {
 
-	private static final String BASE_URI = "http://localhost:8082";
+	private static final String BASE_URI = "http://gateway:8082";
 
 	public String listaCliente() {
 		Client client = ClientBuilder.newClient();

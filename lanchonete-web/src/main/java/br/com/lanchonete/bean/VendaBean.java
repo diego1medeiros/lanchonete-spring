@@ -1,6 +1,7 @@
 package br.com.lanchonete.bean;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,10 +23,12 @@ import br.com.lanchonete.dto.VendaDto;
 import br.com.lanchonete.enumeradores.TipoPagamnento;
 import br.com.lanchonete.service.VendaService;
 import br.com.lanchonete.utils.CarregarImagens;
+import br.com.lanchonete.utils.ImprimirPedidos;
 import br.com.lanchonete.utils.Message;
 import br.com.lanchonete.utils.Relatorio;
 import lombok.Getter;
 import lombok.Setter;
+import net.sf.jasperreports.engine.JRException;
 
 @Getter
 @Setter
@@ -53,7 +56,7 @@ public class VendaBean implements Serializable {
 		venda.setValorTotal(0);
 		venda.setQtdeTotal(0);
 		itensVenda = new ArrayList<>();
-		listaDaVenda = listaVenda();
+    	listaDaVenda = listaVenda();
 
 	}
 
@@ -71,12 +74,15 @@ public class VendaBean implements Serializable {
 			ItemVendaDto itemVenda = new ItemVendaDto();
 			itemVenda.setProduto(produto);
 			itemVenda.setQtde(1);
+			itemVenda.setProdutoId(produto.getId());
 			itemVenda.setValorTotal(produto.getPreco());
 			Message.info(itemVenda.getProduto().getNome() + " adicionado com sucesso!!!", "");
 			itensVenda.add(itemVenda);
 		} else {
 			ItemVendaDto itemVenda = itensVenda.get(posicaoEncontrada);
 			itemVenda.setQtde(itemVenda.getQtde() + 1);
+			itemVenda.setProdutoId(produto.getId());
+
 			itemVenda.setValorTotal(produto.getPreco() * itemVenda.getQtde());
 			Message.info(itemVenda.getProduto().getNome() + " adicionado com sucesso!!!", "");
 
@@ -121,7 +127,9 @@ public class VendaBean implements Serializable {
 				Message.warr("O Cliente e Obrigatorio!!", "");
 				return;
 			}
+			
 			venda.setItensVenda(itensVenda);
+			venda.setClienteId(venda.getCliente().getId());
 			vendaService.cadastrarVendaNoSpring(venda);
 			Message.info("Venda concluida com sucesso!!!", "");
 			listaDadosDosItensDoCarrinho();
@@ -149,13 +157,14 @@ public class VendaBean implements Serializable {
 	}
 
 //	// imrimir os pedidos dos clientes
-	public void getImprimirPedidos(VendaDto venda) {
+	public void getImprimirPedidos(VendaDto venda) throws JRException, IOException {
 		Relatorio<ItemVendaDto> report = new Relatorio<ItemVendaDto>();
 		listaPedidos = listaPedidos(venda.getId());
 		if (listaPedidos.size() > 0) {
 			report.getRelatorio(listaPedidos);
 		} else {
-		}
+	}
+	//	ImprimirPedidos.imprimirPedido(listaPedidos);
 	}
 
 	public List<ItemVendaDto> listaPedidos(Long id) {

@@ -21,6 +21,7 @@ public class ItemVendaDto implements Serializable {
 	private Long id;
 	private int qtde;
 	private double valorTotal;
+	private Long produtoId;
 	private ProdutoDto produto = new ProdutoDto();
 	private List<?> itensVenda;
 	private VendaDto venda = new VendaDto();

@@ -11,7 +11,6 @@ import javax.inject.Named;
 
 import com.google.gson.Gson;
 
-import br.com.lanchonete.dto.ClienteDto;
 import br.com.lanchonete.dto.FornecedorDto;
 import br.com.lanchonete.service.FornecedorService;
 import br.com.lanchonete.utils.BuscaCep;

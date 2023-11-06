@@ -1,14 +1,24 @@
 package br.com.lanchonete.enumeradores;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 public enum TipoPagamnento{
 
-	DINHEIRO(" Dinheiro"), 
-	CARTÃO_DE_DEBITO_VISA("Cartão de Debito Visa"), 
-	CARTÃO_DE_DEBITO_MASTERCARD("Cartão de Debito MasterCard"), 
-	CARTÃO_DE_DEBITO_ELO("Cartão de Debito Elo"), 
-	CARTÃO_DE_CREDITO_VISA("Cartão de Credito Visa"), 
-	CARTÃO_DE_CREDITO_MASTERCARD("Cartão de Ctredito MasterCard"),
-	CARTÃO_DE_CREDITO_ELO("Cartão de Credito Elo");
+	 DINHEIRO("DINHEIRO"),
+	    CARTAO_DE_DEBITO_VISA("CARTAO_DE_DEBITO_VISA"),
+	    CARTAO_DE_DEBITO_MASTERCARD("CARTAO_DE_DEBITO_MASTERCARD"),
+	    CARTAO_DE_DEBITO_ELO("CARTAO_DE_DEBITO_ELO"),
+	    CARTAO_DE_CREDITO_VISA("CARTAO_DE_CREDITO_VISA"),
+	    CARTAO_DE_CREDITO_MASTERCARD("CARTAO_DE_CREDITO_MASTERCARD"),
+	    CARTAO_DE_CREDITO_ELO("CARTAO_DE_CREDITO_ELO");
+	
+	
+	 public String getDescricao() {
+	        Locale ptBrLocale = new Locale("pt", "BR");
+	        ResourceBundle bundle = ResourceBundle.getBundle("TipoPagamento", ptBrLocale);
+	        return bundle.getString(descricao);
+	    }
 
 	private TipoPagamnento(String descricao) {
 		this.descricao = descricao;
@@ -16,9 +26,9 @@ public enum TipoPagamnento{
 
 	private String descricao;
 
-	public String getDescricao() {
-		return descricao;
-	}
+//	public String getDescricao() {
+//		return descricao;
+//	}
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
@@ -27,6 +37,8 @@ public enum TipoPagamnento{
 	public static String[] getDescricaoComboBox() {
 		String[] listaRetorno = new String[7];
 		int i = 0;
+        Locale.setDefault(new Locale("pt", "BR"));
+
 		for (TipoPagamnento tipoPagamnento : TipoPagamnento.values()) {
 			listaRetorno[i] = tipoPagamnento.getDescricao();
 			i++;

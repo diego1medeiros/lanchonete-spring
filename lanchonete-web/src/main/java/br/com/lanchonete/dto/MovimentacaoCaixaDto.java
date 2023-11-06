@@ -22,5 +22,6 @@ public class MovimentacaoCaixaDto implements Serializable{
 	private double valorTotal;
 	private double valorCaixa;
 	private String observacao;
+	private Long funcionarioId ;
 	private FuncionarioDto funcionario = new FuncionarioDto();
 }
