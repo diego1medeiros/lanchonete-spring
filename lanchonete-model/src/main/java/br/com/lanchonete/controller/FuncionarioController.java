@@ -17,43 +17,39 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.lanchonete.dto.funcionariodto.DadosCadastroFuncionario;
 import br.com.lanchonete.dto.funcionariodto.DadosListagemFuncionario;
-import br.com.lanchonete.entity.Funcionario;
-import br.com.lanchonete.repository.FuncionarioRepository;
+import br.com.lanchonete.service.FuncionarioService;
 
 @RestController
 @RequestMapping("/funcionario/lanchonete")
 public class FuncionarioController {
 
 	@Autowired
-	private FuncionarioRepository repository;
-	
+	private FuncionarioService service;
+
 	@GetMapping
 	public ResponseEntity<?> listarFuncionarios() {
-		var listarFuncionarios = repository.findAll().stream().map(DadosListagemFuncionario::new).toList();
+		var listarFuncionarios = service.listarDados();
 		return ResponseEntity.ok(listarFuncionarios);
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<?> cadastrarFuncionario(@RequestBody DadosCadastroFuncionario dadosFuncionario,
 			UriComponentsBuilder uriComponentsBuilder) {
-		Funcionario funcionario = new Funcionario(dadosFuncionario);
-		repository.save(funcionario);
-		URI uri = uriComponentsBuilder.path("/listarfuncionario/{id}").buildAndExpand(funcionario.getId()).toUri();
-		return ResponseEntity.created(uri).body(new DadosListagemFuncionario(funcionario));
+		DadosListagemFuncionario funcionario = service.cadastrarDados(dadosFuncionario);
+		URI uri = uriComponentsBuilder.path("/listarfuncionario/{id}").buildAndExpand(funcionario.id()).toUri();
+		return ResponseEntity.created(uri).body(funcionario);
 	}
-	
+
 	@Transactional
 	@PutMapping
 	public ResponseEntity<?> atualizarFuncionario(@RequestBody DadosCadastroFuncionario dadosFuncionario) {
-		var funcionario = repository.getReferenceById(dadosFuncionario.id());
-		funcionario.atualizarFuncionario(dadosFuncionario);
-		return ResponseEntity.ok(new DadosListagemFuncionario(funcionario));
+		return ResponseEntity.ok(service.atualizarDados(dadosFuncionario));
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> excluirFuncionario(@PathVariable Long id) {
-		repository.deleteById(id);
+		service.excluirDados(id);
 		return ResponseEntity.noContent().build();
 	}
-	
+
 }

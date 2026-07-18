@@ -1,6 +1,5 @@
 package br.com.lanchonete.controller;
 
-import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.lanchonete.dto.Clientedto.DadosAtualizarCliente;
 import br.com.lanchonete.dto.Clientedto.DadosCadastroCliente;
 import br.com.lanchonete.dto.Clientedto.DadosListagemCliente;
-import br.com.lanchonete.entity.Cliente;
-import br.com.lanchonete.repository.ClienteRepository;
+import br.com.lanchonete.service.ClienteService;
 //teste
 
 @RestController
@@ -27,34 +25,31 @@ import br.com.lanchonete.repository.ClienteRepository;
 public class ClienteController {
 
 	@Autowired
-	private ClienteRepository repository;
+	private ClienteService clienteService;
 
 	@GetMapping
 	public ResponseEntity<?> listarClientes() {
-		var listarClientes = repository.findAll().stream().map(DadosListagemCliente::new).toList();
+		var listarClientes = clienteService.listarDados();
 		return ResponseEntity.ok(listarClientes);
 	}
 
 	@PostMapping
 	public ResponseEntity<DadosListagemCliente> cadastrarCliente(@RequestBody DadosCadastroCliente dadosCliente,
 			UriComponentsBuilder uriComponentsBuilder) {
-		Cliente cliente = new Cliente(dadosCliente);
-		repository.save(cliente);
-		URI uri = uriComponentsBuilder.path("/listarcliente/{id}").buildAndExpand(cliente.getId()).toUri();
-		return ResponseEntity.created(uri).body(new DadosListagemCliente(cliente));
+		DadosListagemCliente clienteCadastrado = clienteService.cadastrarDados(dadosCliente);
+		var uri = uriComponentsBuilder.path("/clientes/{id}").buildAndExpand(clienteCadastrado.id()).toUri();
+		return ResponseEntity.created(uri).body(clienteCadastrado);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> excluir(@PathVariable Long id) {
-		repository.deleteById(id);
+		clienteService.excluirDados(id);
 		return ResponseEntity.noContent().build();
 	}
 
 	@Transactional
 	@PutMapping
 	public ResponseEntity<?> atualizar(@RequestBody DadosAtualizarCliente dadosCliente) {
-		var cliente = repository.getReferenceById(dadosCliente.id());
-		cliente.atualizarCliente(dadosCliente);
-		return ResponseEntity.ok(new DadosListagemCliente(cliente));
+		return ResponseEntity.ok(clienteService.atualizarDados(dadosCliente));
 	}
 }
