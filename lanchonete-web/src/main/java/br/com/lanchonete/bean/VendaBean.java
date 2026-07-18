@@ -47,6 +47,8 @@ public class VendaBean implements Serializable {
 	private List<ItemVendaDto> itensVenda;
 
 	private ItemVendaDto itemVenda = new ItemVendaDto();
+	
+	
 
 	// lista imformações dos itens da venda vindo do banco de dados
 	@PostConstruct
@@ -182,5 +184,6 @@ public class VendaBean implements Serializable {
 		List<VendaDto> listaVenda = Arrays.asList(listaDaVenda);
 		return listaVenda;
 	}
-
+	
+	
 }
