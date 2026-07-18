@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -22,10 +21,6 @@ jobs:
           - lanchonete-web
 
     steps:
-<<<<<<< HEAD
-
-=======
->>>>>>> b7306c1 (Adiciona pipeline CI)
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -38,8 +33,4 @@ jobs:
 
       - name: Build ${{ matrix.module }}
         working-directory: ./${{ matrix.module }}
-<<<<<<< HEAD
         run: mvn -B clean verify
-=======
-        run: mvn -B clean verify
->>>>>>> b7306c1 (Adiciona pipeline CI)
